@@ -23,6 +23,14 @@ function cmp_feature_priority( $a, $b )
   return ($a->feature_priority < $b->feature_priority) ? -1 : 1;
 } 
 
+function cmp_issue_priority( $a, $b )
+{ 
+  if(  $a->priority ==  $b->priority ){
+	return 0;
+  } 
+  return ($a->priority > $b->priority) ? -1 : 1;
+} 
+
 function cmp_finish_date( $a, $b )
 { 
   if(  $a->estimated_end_time ==  $b->estimated_end_time ){

@@ -32,14 +32,33 @@ $features=$c->db->getFeatures();
 			}
 		}
 		
+		function updateTicketPriority(action, repo, ticket_id){	
+			var actions = action.split(':-:');
+			if(actions[1]=="increase"){
+				$.get('update_ticket_priority.php?repo='+repo+'&ticket='+ticket_id+'&action=increase', function(data) {
+				  $('.result').html(data);
+				});
+			}else if(actions[1]=="decrease"){
+				$.get('update_ticket_priority.php?repo='+repo+'&ticket='+ticket_id+'&action=decrease', function(data) {
+				  $('.result').html(data);
+				});
+			}else{
+				$.get('update_ticket_priority.php?repo='+repo+'&ticket='+ticket_id+'&action=update&priority='+actions[1], function(data) {
+				  $('.result').html(data);
+				});
+			}
+			window.location.reload();
+		}
+		
 		$(document).ready( function() {
 			<?php foreach($c->issues as $issue) { ?>
-			$("#<?php echo $issue->id; ?>").contextMenu({
-				menu: "<?php echo $issue->id; ?>-menu"
+			$("#<?php echo $issue->idForMenu; ?>").contextMenu({
+				menu: "<?php echo $issue->idForMenu; ?>-menu"
 			},
 				function(action, el, pos) {
-					updateTicket(action, '<?php echo $issue->repo ?>', <?php echo $issue->number; ?>);
-			});
+					updateTicketPriority(action, '<?php echo $issue->repo ?>', <?php echo $issue->number; ?>);
+				}
+			);
 			<?php } ?>
 		});
 		
@@ -48,6 +67,36 @@ $features=$c->db->getFeatures();
 </head>
 <body>
 
+<?php 
+	foreach($c->issues as $issue) {
+?>
+	<ul id="<?php echo $issue->idForMenu; ?>-menu" class="contextMenu"> 
+		<li class="separator">
+			<a title="Increase Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:increase"><img src="images/add.png" width="20px"/></a>
+			Increase Priority
+		</li>
+		 <li class="separator">
+			<a title="Decrease Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:decrease"><img src="images/remove.png" width="20px"/></a>
+			Decrease Priority
+		</li>
+	</ul>
+<?php } ?>
+
+<!-- setting priority
+<?php 
+	foreach($c->issues as $issue) {
+?>
+	<ul id="<?php echo $issue->idForMenu; ?>-menu" class="contextMenu"> 
+	<?php foreach(array(0,1,2,3,4,5,6,7,8,9,10) as $priority){ ?>
+    <li class="separator">
+        <a title="Priority <?php echo $priority; ?>" style="display: inline; padding: 0; margin: 0;" href="#priority:-:<?php echo $priority; ?>"><img src="images/add.png" width="20px"/></a>
+		Priority <?php echo $priority; ?>
+    </li>
+	<?php } ?>
+</ul>
+<?php } ?>
+-->
+<!-- old feature stuff
 <?php 
 	foreach($c->issues as $issue) {
 		$issue_features=$c->db->getIssueFeatures($issue->repo,$issue->number);
@@ -70,7 +119,7 @@ $features=$c->db->getFeatures();
 	<?php } ?>
 </ul>
 <?php } ?>
-
+-->
 <div id="selector">
 <form method="get">
 <?php if(isset($_GET['mode'])){ ?>
@@ -124,7 +173,7 @@ g.setFormatArr("day","week","month"); // Set format options (up to 4 : "minute",
 <?php if($_GET['mode']=="feature") {?>
 JSGantt.parseXML("gant_xml_by_feature.php<?php echo $getvals ?>",g);
 <?php }else{ ?>
-JSGantt.parseXML("gant_xml.php<?php echo $getvals ?>",g);
+JSGantt.parseXML("gant_xml_by_user.php<?php echo $getvals ?>",g);
 <?php } ?>
 g.Draw();	
 g.DrawDependencies();

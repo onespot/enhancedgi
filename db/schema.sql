@@ -14,6 +14,14 @@ CREATE TABLE features_issues(
     FOREIGN KEY (feature_id) REFERENCES features(id)  ON DELETE CASCADE
 ) ENGINE=INNODB;
 
+DROP TABLE IF EXISTS issue_priority;
+CREATE TABLE issue_priority(
+	issue_repo VARCHAR(64) NOT NULL,
+    issue_id INTEGER NOT NULL,
+	priority INTEGER NOT NULL,
+	UNIQUE INDEX repo_ticket_index (issue_repo,issue_id)
+) ENGINE=INNODB;
+
 GRANT ALL ON * TO enhancedgi@'localhost' IDENTIFIED BY 'poiulkjh';
 
 INSERT INTO features(title,description,priority) VALUES('unassigned','',10000000);
