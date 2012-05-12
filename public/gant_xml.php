@@ -42,8 +42,8 @@ $c = new XmlController();
 			<pGroup>0</pGroup>
 			<pParent><?php echo $parent_id; ?></pParent>
 			<pOpen>1</pOpen>
-			<pDepend></pDepend>
-			<pGhId><?php echo $issue->id; ?></pGhId>
+			<pDepend><?php echo $c->xmlKeyMap[$issue->dependsOnKey]; ?></pDepend>
+			<pGhId><?php echo $issue->idForMenu; ?></pGhId>
 		</task>
 <?php 
 		}
