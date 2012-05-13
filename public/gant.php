@@ -32,22 +32,29 @@ $features=$c->db->getFeatures();
 			}
 		}
 		
+		function maybeReload(){
+			<?php if(isset($_GET['batchmode']) && $_GET['batchmode']=="true"){?>
+				  return;
+			<?php } ?>
+			window.location.reload();
+		}
+		
 		function updateTicketPriority(action, repo, ticket_id){	
 			var actions = action.split(':-:');
 			if(actions[1]=="increase"){
 				$.get('update_ticket_priority.php?repo='+repo+'&ticket='+ticket_id+'&action=increase', function(data) {
 				  $('.result').html(data);
-				  window.location.reload();
+					maybeReload();
 				});
 			}else if(actions[1]=="decrease"){
 				$.get('update_ticket_priority.php?repo='+repo+'&ticket='+ticket_id+'&action=decrease', function(data) {
 				  $('.result').html(data);
-				  window.location.reload();
+				  maybeReload();
 				});
 			}else{
 				$.get('update_ticket_priority.php?repo='+repo+'&ticket='+ticket_id+'&action=update&priority='+actions[1], function(data) {
 				  $('.result').html(data);
-				  window.location.reload();
+				  maybeReload();
 				});
 			}
 		}
@@ -155,6 +162,7 @@ $features=$c->db->getFeatures();
  </table>
  <input type="radio" name="mode" value="user" <?php echo ((!isset($_GET['mode'])) || ($_GET['mode']=="user"))?"checked":"" ?> /> Developer<br />
  <input type="radio" name="mode" value="milestone" <?php echo ($_GET['mode']=="milestone")?"checked":"" ?> /> Milestone<br />
+ <input type="checkbox" name="batchmode" value="true" <?php echo (isset($_GET['batchmode']) && $_GET['batchmode']=="true")?"checked":"" ?> />Batch Mode<br />
  <input type="submit" value="submit" />
 </form>
 </div>
