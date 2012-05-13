@@ -37,17 +37,19 @@ $features=$c->db->getFeatures();
 			if(actions[1]=="increase"){
 				$.get('update_ticket_priority.php?repo='+repo+'&ticket='+ticket_id+'&action=increase', function(data) {
 				  $('.result').html(data);
+				  window.location.reload();
 				});
 			}else if(actions[1]=="decrease"){
 				$.get('update_ticket_priority.php?repo='+repo+'&ticket='+ticket_id+'&action=decrease', function(data) {
 				  $('.result').html(data);
+				  window.location.reload();
 				});
 			}else{
 				$.get('update_ticket_priority.php?repo='+repo+'&ticket='+ticket_id+'&action=update&priority='+actions[1], function(data) {
 				  $('.result').html(data);
+				  window.location.reload();
 				});
 			}
-			window.location.reload();
 		}
 		
 		$(document).ready( function() {
