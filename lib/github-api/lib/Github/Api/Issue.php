@@ -22,7 +22,7 @@ class Github_Api_Issue extends Github_Api
     {
         //$response = $this->get('issues/list/'.urlencode($username).'/'.urlencode($repo).'/'.urlencode($state));
 		
-		$response = $this->get('repos/'.urlencode($username).'/'.urlencode($repo).'/issues?state='.$state);
+		$response = $this->get('repos/'.urlencode($username).'/'.urlencode($repo).'/issues?state='.$state.'&per_page=100');
 		
         return $response;
     }
