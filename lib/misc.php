@@ -9,7 +9,9 @@ function startsWith($haystack, $needle)
 function cmp_milestone_priority( $a, $b )
 { 
   if(  $a->milestone_priority ==  $b->milestone_priority ){
-	if(  $a->milestone_id ==  $b->milestone_id ){ return 0 ; } 
+	if(  $a->milestone_id ==  $b->milestone_id ){ 
+		return strcmp($a->_issue->title,$b->_issue->title) ; 
+	} 
 	return ($a->milestone_id < $b->milestone_id) ? -1 : 1;
   } 
   return ($a->milestone_priority < $b->milestone_priority) ? -1 : 1;
@@ -26,7 +28,7 @@ function cmp_feature_priority( $a, $b )
 function cmp_issue_priority( $a, $b )
 { 
   if(  $a->priority ==  $b->priority ){
-	return 0;
+	return strcmp($a->_issue->title,$b->_issue->title) ; 
   } 
   return ($a->priority > $b->priority) ? -1 : 1;
 } 
@@ -34,7 +36,7 @@ function cmp_issue_priority( $a, $b )
 function cmp_finish_date( $a, $b )
 { 
   if(  $a->estimated_end_time ==  $b->estimated_end_time ){
-	return 0;
+	return strcmp($a->_issue->title,$b->_issue->title) ; 
   }
   return ($a->estimated_end_time < $b->estimated_end_time) ? -1 : 1;
 } 
