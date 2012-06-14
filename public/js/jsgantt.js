@@ -59,7 +59,7 @@ var vBenchTime = new Date().getTime();
 * note : you should use setCaption("Caption") in order to display the caption
 * @return void
 */
-JSGantt.TaskItem = function(pID, pName, pStart, pEnd, pColor, pLink, pMile, pRes, pComp, pGroup, pParent, pOpen, pDepend, pCaption, pGhId)
+JSGantt.TaskItem = function(pID, pName, pStart, pEnd, pColor, pLink, pMile, pRes, pComp, pGroup, pParent, pOpen, pDepend, pCaption, pGhId, pGhMs)
 {
 
 /**
@@ -184,6 +184,14 @@ var vCaption = pCaption;
 var vGhId = pGhId;
 
 /**
+* @property vGhMs 
+* @type String 
+* @default vGhMs
+* @private
+*/    
+var vGhMs = pGhMs;
+
+/**
 * @property vDuration 
 * @type Number 
 * @default ''
@@ -281,6 +289,12 @@ var vVisible  = 1;
 * @method getGhid
 * @return {String}
 */    this.getGhid  = function(){ if(vGhId) return vGhId; else return ''; };
+
+/**
+* Returns task milestone title (if it exists)
+* @method getGhms
+* @return {String}
+*/    this.getGhms  = function(){ if(vGhMs) return vGhMs; else return ''; };
 
 /**
 * Returns task resource name as string
@@ -1494,7 +1508,7 @@ Complete-Displays task percent complete</p>
                   // Draw Task Bar  which has outer DIV with enclosed colored bar div, and opaque completion div
 	            vRightTable +=
                      '<div id=bardiv_' + vID + ' style="position:absolute; top:4px; left:' + Math.ceil(vTaskLeft * (vDayWidth) + 1) + 'px; height:18px; width:' + Math.ceil((vTaskRight) * (vDayWidth) - 1) + 'px">' +
-                        '<div id=taskbar_' + vID + ' title="' + vTaskList[i].getName() + ': ' + vDateRowStr + '" class=gtask style="background-color:#' + vTaskList[i].getColor() +'; height: 13px; width:' + Math.ceil((vTaskRight) * (vDayWidth) - 1) + 'px; cursor: pointer;opacity:0.9;" ' +
+                        '<div id=taskbar_' + vID + ' title="' + vTaskList[i].getGhms() + ' : ' + vDateRowStr + '" class=gtask style="background-color:#' + vTaskList[i].getColor() +'; height: 13px; width:' + Math.ceil((vTaskRight) * (vDayWidth) - 1) + 'px; cursor: pointer;opacity:0.9;" ' +
                            'onclick=JSGantt.taskLink("' + vTaskList[i].getLink() + '",300,200); >' +
                            '<div class=gcomplete style="Z-INDEX: -4; float:left; background-color:black; height:5px; overflow: auto; margin-top:4px; filter: alpha(opacity=40); opacity:0.4; width:' + vTaskList[i].getCompStr() + '; overflow:hidden">' +
                            '</div>' +
@@ -2219,8 +2233,11 @@ JSGantt.AddXMLTask = function(pGanttVar){
 			try { pGhId = Task[i].getElementsByTagName("pGhId")[0].childNodes[0].nodeValue;
 			} catch (error) { pGhId ="";}
 			
+			try { pGhMs = Task[i].getElementsByTagName("pGhMs")[0].childNodes[0].nodeValue;
+			} catch (error) { pGhMs ="";}
+			
 			// Finally add the task
-			pGanttVar.AddTaskItem(new JSGantt.TaskItem(pID , pName, pStart, pEnd, pColor,  pLink, pMile, pRes,  pComp, pGroup, pParent, pOpen, pDepend,pCaption,pGhId));
+			pGanttVar.AddTaskItem(new JSGantt.TaskItem(pID , pName, pStart, pEnd, pColor,  pLink, pMile, pRes,  pComp, pGroup, pParent, pOpen, pDepend,pCaption,pGhId,pGhMs));
 		}
 	}
 };
@@ -2313,8 +2330,11 @@ JSGantt.ChromeXMLParse = function (pGanttVar){
 			var te = Task.split(/<pGhId>/i);
 			if(te.length> 2){var pGhId=te[1];} else {var pGhId = "";}
 			
+			var te = Task.split(/<pGhMs>/i);
+			if(te.length> 2){var pGhMs=te[1];} else {var pGhMs = "";}
+			
 			// Finally add the task
-			pGanttVar.AddTaskItem(new JSGantt.TaskItem(pID , pName, pStart, pEnd, pColor,  pLink, pMile, pRes,  pComp, pGroup, pParent, pOpen, pDepend,pCaption,pGhId));
+			pGanttVar.AddTaskItem(new JSGantt.TaskItem(pID , pName, pStart, pEnd, pColor,  pLink, pMile, pRes,  pComp, pGroup, pParent, pOpen, pDepend,pCaption,pGhId,pGhMs));
 		};
 	};
 };

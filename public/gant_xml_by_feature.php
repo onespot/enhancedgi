@@ -44,6 +44,7 @@ $c = new XmlController();
 			<pOpen>1</pOpen>
 			<pDepend></pDepend>
 			<pGhId><?php echo $issue->id; ?></pGhId>
+			<pGhMs><?php echo $issue->_issue->milestone->title; ?></pGhMs>
 		</task>
 <?php 
 		}

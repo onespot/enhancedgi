@@ -44,6 +44,7 @@ $c = new XmlController();
 			<pOpen>1</pOpen>
 			<pDepend><?php echo $c->xmlKeyMap[$issue->dependsOnKey]; ?></pDepend>
 			<pGhId><?php echo $issue->idForMenu; ?></pGhId>
+			<pGhMs><?php echo $issue->_issue->milestone->title; ?></pGhMs>
 		</task>
 <?php 
 		}
