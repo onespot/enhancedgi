@@ -1,5 +1,10 @@
 <?php
 
+$VERSION_COLORS=array(
+"1.0"=>"382f85",
+"2.0"=>"ffe073",
+);
+
 function startsWith($haystack, $needle)
 {
     $length = strlen($needle);

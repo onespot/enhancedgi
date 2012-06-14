@@ -34,7 +34,7 @@ $c = new XmlController();
 			<pName><?php echo xmlEscape($issue->_issue->title); ?></pName>
 			<pStart><?php echo date("m/d/Y",$issue->estimated_start_time); ?></pStart>
 			<pEnd><?php echo date("m/d/Y",$issue->estimated_end_time); ?></pEnd>
-			<pColor><?php echo strToHexColor($issue->_issue->assignee->login); ?></pColor>
+			<pColor><?php echo $issue->color; ?></pColor>
 			<pLink><?php echo $issue->_issue->html_url; ?></pLink>
 			<pMile>0</pMile>
 			<pRes><?php echo xmlEscape($issue->_issue->assignee->login) ?> [<?php echo ceil(($issue->time)/86400) ?> days]</pRes>

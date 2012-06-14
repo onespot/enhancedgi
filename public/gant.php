@@ -167,6 +167,9 @@ $features=$c->db->getFeatures();
 </form>
 </div>
 
+<?php foreach($VERSION_COLORS as $key=>$val){?>
+	<span style="color: #<?php echo $val; ?>;"><?php echo $key; ?></span>
+<?php } ?>
 <div style="position:relative" class="gantt" id="GanttChartDIV"></div>
 
 <script language="javascript">

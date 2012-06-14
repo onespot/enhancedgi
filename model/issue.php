@@ -20,8 +20,11 @@ class Issue{
 	public $dependsOnRepo;
 	public $dependsOnTicket;
 	public $dependsOnKey;
+	public $milestone_version;
+	public $color;
 	
 	function __construct($db, $_issue){
+		global $VERSION_COLORS; // in lib/misc.php
 		// this should be include repo name also
 		$matches=array();
 		if(preg_match("/[0-9a-zA-Z-_]+\/repos\/([0-9a-zA-Z-_]+)\/([0-9a-zA-Z-_]+)\/issues\/[0-9]+/",$_issue->url,$matches)==1){
@@ -62,6 +65,21 @@ class Issue{
 			}
 		}
 		$this->milestone_id=$_issue->milestone->number;
+		$msversion=array();
+		if(preg_match("/.*([0-9]\.[0-9])$/",$_issue->milestone->title,$msversion)==1){
+			$this->milestone_version=$msversion[1];
+		}
+		switch($this->milestone_version){
+			case "1.0":
+				$this->color=$VERSION_COLORS["1.0"];
+				break;
+			case "2.0":
+				$this->color=$VERSION_COLORS["2.0"];
+				break;
+			default:
+				$this->color="000000";
+			break;
+		}
 		foreach($_issue->labels as $label){
 			if(startsWith($label->name,"time:")){
 				$timeStr=substr($label->name,5,strlen($label->name));
