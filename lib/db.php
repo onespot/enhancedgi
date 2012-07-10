@@ -15,6 +15,7 @@ class Database{
             or die("Unable to connect to MySQL");
         mysql_select_db($dbname);
     }
+	
 
 
 	

@@ -66,7 +66,7 @@ class Issue{
 		}
 		$this->milestone_id=$_issue->milestone->number;
 		$msversion=array();
-		if(preg_match("/.*([0-9]\.[0-9])$/",$_issue->milestone->title,$msversion)==1){
+		if(preg_match("/.*([0-9]\.[0-9]|Bug)$/",$_issue->milestone->title,$msversion)==1){
 			$this->milestone_version=$msversion[1];
 		}
 		$this->color=isset($VERSION_COLORS[$this->milestone_version])?$VERSION_COLORS[$this->milestone_version]:"000000";

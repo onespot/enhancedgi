@@ -1,6 +1,7 @@
 <?php
 
 $VERSION_COLORS=array(
+"Bug"=>"ff3300",
 "1.0"=>"382f85",
 "1.1"=>"ffe073",
 "1.2"=>"7608aa",
@@ -34,6 +35,23 @@ function cmp_feature_priority( $a, $b )
 
 function cmp_issue_priority( $a, $b )
 { 
+	$av=$a->milestone_version;
+	$bv=$b->milestone_version;
+	if(empty($a->milestone_version)){
+		$av=1000;
+	}
+	if(empty($b->milestone_version)){
+		$bv=1000;
+	}
+	if($a->milestone_version=="Bug"){
+		$av=0;
+	}
+	if($b->milestone_version=="Bug"){
+		$bv=0;
+	}
+  if($av!=$bv){
+	return ($av > $bv) ? 1 : -1;
+  }
   if(  $a->priority ==  $b->priority ){
 	return strcmp($a->_issue->title,$b->_issue->title) ; 
   } 
