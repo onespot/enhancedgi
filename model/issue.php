@@ -69,6 +69,8 @@ class Issue{
 		if(preg_match("/.*([0-9]\.[0-9])$/",$_issue->milestone->title,$msversion)==1){
 			$this->milestone_version=$msversion[1];
 		}
+		$this->color=isset($VERSION_COLORS[$this->milestone_version])?$VERSION_COLORS[$this->milestone_version]:"000000";
+		/*
 		switch($this->milestone_version){
 			case "1.0":
 				$this->color=$VERSION_COLORS["1.0"];
@@ -80,6 +82,7 @@ class Issue{
 				$this->color="000000";
 			break;
 		}
+		*/
 		foreach($_issue->labels as $label){
 			if(startsWith($label->name,"time:")){
 				$timeStr=substr($label->name,5,strlen($label->name));

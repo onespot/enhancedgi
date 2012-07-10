@@ -2,7 +2,9 @@
 
 $VERSION_COLORS=array(
 "1.0"=>"382f85",
-"2.0"=>"ffe073",
+"1.1"=>"ffe073",
+"1.2"=>"7608aa",
+"1.3"=>"3c13af",
 );
 
 function startsWith($haystack, $needle)
