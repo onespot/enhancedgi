@@ -47,6 +47,8 @@ var vBenchTime = new Date().getTime();
 * @param pStart {Date} Task start date/time (not required for pGroup=1 )
 * @param pEnd {Date} Task end date/time, you can set the end time to 12:00 to indicate half-day (not required for pGroup=1 )
 * @param pColor {String} Task bar RGB value
+* @param pBorderColor {String} Task bar border RGB value
+* @param pTextColor {String} Task bar text RGB value
 * @param pLink {String} Task URL, clicking on the task will redirect to this url. Leave empty if you do not with the Task also serve as a link
 * @param pMile {Boolean} Determines whether task is a milestone (1=Yes,0=No)
 * @param pRes {String} Resource to perform the task
@@ -59,7 +61,7 @@ var vBenchTime = new Date().getTime();
 * note : you should use setCaption("Caption") in order to display the caption
 * @return void
 */
-JSGantt.TaskItem = function(pID, pName, pStart, pEnd, pColor, pLink, pMile, pRes, pComp, pGroup, pParent, pOpen, pDepend, pCaption, pGhId, pGhMs)
+JSGantt.TaskItem = function(pID, pName, pStart, pEnd, pColor, pBorderColor, pTextColor, pLink, pMile, pRes, pComp, pGroup, pParent, pOpen, pDepend, pCaption, pGhId, pGhMs)
 {
 
 /**
@@ -102,6 +104,22 @@ var vEnd   = new Date();
 * @private
 */    
 var vColor = pColor;
+
+/**
+* @property vBorderColor 
+* @type String 
+* @default pBorderColor
+* @private
+*/    
+var vBorderColor = pBorderColor;
+
+/**
+* @property vTextColor 
+* @type String 
+* @default pTextColor
+* @private
+*/    
+var vTextColor = pTextColor;
 
 /**
 * @property vLink 
@@ -259,6 +277,18 @@ var vVisible  = 1;
 * @method getColor
 * @return {String}
 */    this.getColor    = function(){ return vColor};
+
+/**
+* Returns task bar border color (i.e. 00FF00)
+* @method getBorderColor
+* @return {String}
+*/    this.getBorderColor    = function(){ return vBorderColor};
+
+/**
+* Returns task bar text color (i.e. 00FF00)
+* @method getTextColor
+* @return {String}
+*/    this.getTextColor    = function(){ return vTextColor};
 
 /**
 * Returns task URL (i.e. http://www.jsgantt.com)
@@ -1080,7 +1110,7 @@ Complete-Displays task percent complete</p>
                }
 
                vLeftTable += 
-                  '<span class="ganttask" id="'+ vTaskList[i].getGhid() +'" onclick=JSGantt.taskLink("' + vTaskList[i].getLink() + '",300,200); style="cursor:pointer"> ' + vTaskList[i].getName() + '</span></NOBR></TD>' ;
+                  '<span class="ganttask" id="'+ vTaskList[i].getGhid() +'" onclick=JSGantt.taskLink("' + vTaskList[i].getLink() + '",300,200); style="cursor:pointer;color:#'+vTaskList[i].getTextColor()+'"> ' + vTaskList[i].getName() + '</span></NOBR></TD>' ;
 
                if(vShowRes ==1) vLeftTable += '  <TD class=gname style="WIDTH: 60px; HEIGHT: 20px; TEXT-ALIGN: center; BORDER-TOP: #efefef 1px solid; FONT-SIZE: 12px; BORDER-LEFT: #efefef 1px solid;" align=center><NOBR>' + vTaskList[i].getResource() + '</NOBR></TD>' ;
                if(vShowDur ==1) vLeftTable += '  <TD class=gname style="WIDTH: 60px; HEIGHT: 20px; TEXT-ALIGN: center; BORDER-TOP: #efefef 1px solid; FONT-SIZE: 12px; BORDER-LEFT: #efefef 1px solid;" align=center><NOBR>' + vTaskList[i].getDuration(vFormat) + '</NOBR></TD>' ;
@@ -1508,7 +1538,7 @@ Complete-Displays task percent complete</p>
                   // Draw Task Bar  which has outer DIV with enclosed colored bar div, and opaque completion div
 	            vRightTable +=
                      '<div id=bardiv_' + vID + ' style="position:absolute; top:4px; left:' + Math.ceil(vTaskLeft * (vDayWidth) + 1) + 'px; height:18px; width:' + Math.ceil((vTaskRight) * (vDayWidth) - 1) + 'px">' +
-                        '<div id=taskbar_' + vID + ' title="' + vTaskList[i].getGhms() + ' : ' + vDateRowStr + '" class=gtask style="background-color:#' + vTaskList[i].getColor() +'; height: 13px; width:' + Math.ceil((vTaskRight) * (vDayWidth) - 1) + 'px; cursor: pointer;opacity:0.9;" ' +
+                        '<div id=taskbar_' + vID + ' title="' + vTaskList[i].getGhms() + ' : ' + vDateRowStr + '" class=gtask style="border-style:solid;border-width:2px;border-color:#' + vTaskList[i].getBorderColor() +';background-color:#' + vTaskList[i].getColor() +'; height: 11px; width:' + Math.ceil((vTaskRight) * (vDayWidth) - 1) + 'px; cursor: pointer;opacity:0.9;" ' +
                            'onclick=JSGantt.taskLink("' + vTaskList[i].getLink() + '",300,200); >' +
                            '<div class=gcomplete style="Z-INDEX: -4; float:left; background-color:black; height:5px; overflow: auto; margin-top:4px; filter: alpha(opacity=40); opacity:0.4; width:' + vTaskList[i].getCompStr() + '; overflow:hidden">' +
                            '</div>' +
@@ -2190,6 +2220,12 @@ JSGantt.AddXMLTask = function(pGanttVar){
 			try { pColor = Task[i].getElementsByTagName("pColor")[0].childNodes[0].nodeValue;
 			} catch (error) {pColor ="0000ff";}
 			
+			try { pBorderColor = Task[i].getElementsByTagName("pBorderColor")[0].childNodes[0].nodeValue;
+			} catch (error) {pBorderColor = "0000ff";}
+			
+			try { pTextColor = Task[i].getElementsByTagName("pTextColor")[0].childNodes[0].nodeValue;
+			} catch (error) {pTextColor = "000000";}
+			
 			try { pParent = Task[i].getElementsByTagName("pParent")[0].childNodes[0].nodeValue;
 			} catch (error) {pParent =0;}
 			pParent *= 1;
@@ -2237,7 +2273,8 @@ JSGantt.AddXMLTask = function(pGanttVar){
 			} catch (error) { pGhMs ="";}
 			
 			// Finally add the task
-			pGanttVar.AddTaskItem(new JSGantt.TaskItem(pID , pName, pStart, pEnd, pColor,  pLink, pMile, pRes,  pComp, pGroup, pParent, pOpen, pDepend,pCaption,pGhId,pGhMs));
+			
+			pGanttVar.AddTaskItem(new JSGantt.TaskItem(pID , pName, pStart, pEnd, pColor, pBorderColor, pTextColo, pLink, pMile, pRes,  pComp, pGroup, pParent, pOpen, pDepend,pCaption,pGhId,pGhMs));
 		}
 	}
 };
@@ -2277,7 +2314,7 @@ JSGantt.ChromeXMLParse = function (pGanttVar){
 		for(var i=1;i<n;i++) {
 			Task = ta[i].replace(/<[/]p/g, '<p');	
 			var te = Task.split(/<pid>/i);
-	
+		
 			if(te.length> 2){var pID=te[1];} else {var pID = 0;}
 			pID *= 1;
 	
@@ -2292,6 +2329,12 @@ JSGantt.ChromeXMLParse = function (pGanttVar){
 	
 			var te = Task.split(/<pColor>/i);
 			if(te.length> 2){var pColor=te[1];} else {var pColor = '0000ff';}
+			
+			var te = Task.split(/<pBorderColor>/i);
+			if(te.length> 2){var pBorderColor=te[1];} else {var pBorderColor = '0000ff';}
+			
+			var te = Task.split(/<pTextColor>/i);
+			if(te.length> 2){var pTextColor=te[1];} else {var pTextColor = '000000';}
 
 			var te = Task.split(/<pLink>/i);
 			if(te.length> 2){var pLink=te[1];} else {var pLink = "";}
@@ -2334,7 +2377,7 @@ JSGantt.ChromeXMLParse = function (pGanttVar){
 			if(te.length> 2){var pGhMs=te[1];} else {var pGhMs = "";}
 			
 			// Finally add the task
-			pGanttVar.AddTaskItem(new JSGantt.TaskItem(pID , pName, pStart, pEnd, pColor,  pLink, pMile, pRes,  pComp, pGroup, pParent, pOpen, pDepend,pCaption,pGhId,pGhMs));
+			pGanttVar.AddTaskItem(new JSGantt.TaskItem(pID , pName, pStart, pEnd, pColor, pBorderColor, pTextColor, pLink, pMile, pRes,  pComp, pGroup, pParent, pOpen, pDepend,pCaption,pGhId,pGhMs));
 		};
 	};
 };

@@ -12,10 +12,18 @@ $features=$c->db->getFeatures();
     <title>Gantt Chart</title>
 	<link rel="stylesheet" type="text/css" href="css/jsgantt.css" />
 	<link rel="stylesheet" type="text/css" href="css/jquery.contextMenu.css" />
-	<script language="javascript" src="js/jquery-1.4.2.min.js"></script>
+	<!-- <script language="javascript" src="js/jquery-1.4.2.min.js"></script> -->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
 	<script language="javascript" src="js/jquery.contextMenu.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
 	<script language="javascript" src="js/jsgantt.js"></script>
-	
+	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/base/jquery-ui.css" type="text/css" media="all" />
+	<script>
+	$(function() {
+	currentText: "Now"
+		$( "#datepicker" ).datepicker( {dateFormat: "yy-mm-dd"} );
+	});
+	</script>
 	<script type="text/javascript">
 		function updateTicket(action, repo, ticket_id){	
 			var actions = action.split(':-:');
@@ -163,6 +171,8 @@ $features=$c->db->getFeatures();
  <input type="radio" name="mode" value="user" <?php echo ((!isset($_GET['mode'])) || ($_GET['mode']=="user"))?"checked":"" ?> /> Developer<br />
  <input type="radio" name="mode" value="milestone" <?php echo ($_GET['mode']=="milestone")?"checked":"" ?> /> Milestone<br />
  <input type="checkbox" name="batchmode" value="true" <?php echo (isset($_GET['batchmode']) && $_GET['batchmode']=="true")?"checked":"" ?> />Batch Mode<br />
+ Last Reviewed<br />
+ <input type="text" name="last_review" id="datepicker" value="<?php echo $_GET['last_review']; ?>"><br />
  <input type="submit" value="submit" />
 </form>
 </div>
@@ -189,8 +199,8 @@ g.setFormatArr("day","week","month"); // Set format options (up to 4 : "minute",
 //g.AddTaskItem(new JSGantt.TaskItem(11,  'Chart Object',         '2/10/2008', '2/10/2008', 'ff00ff', 'http://www.yahoo.com', 1, 'Shlomy',  100, 0, 1, 1, "121,122", "My Caption"));
 <?php if($_GET['mode']=="milestone") {?>
 JSGantt.parseXML("gant_xml.php<?php echo $getvals ?>",g);
-<?php }else{ ?>
-JSGantt.parseXML("gant_xml_by_user.php<?php echo $getvals ?>",g);
+<?php }else{?>
+JSGantt.parseXML("gant_xml_by_user.php<?php echo $getvals ?>&last_review=<?php echo $_GET['last_review']; ?>",g);
 <?php } ?>
 g.Draw();	
 g.DrawDependencies();
