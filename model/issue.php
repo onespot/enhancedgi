@@ -16,6 +16,7 @@ class Issue{
 	public $estimated_start_time;
 	public $estimated_end_time;
 	public $priority;
+	public $tag_priority = 0;
 	public $dependsOnUser;
 	public $dependsOnRepo;
 	public $dependsOnTicket;
@@ -24,7 +25,7 @@ class Issue{
 	public $color;
 	
 	function __construct($db, $_issue){
-		global $VERSION_COLORS; // in lib/misc.php
+		global $VERSION_COLORS, $PRIORITY_COLORS; // in lib/misc.php
 		// this should be include repo name also
 		$matches=array();
 		if(preg_match("/[0-9a-zA-Z-_]+\/repos\/([0-9a-zA-Z-_]+)\/([0-9a-zA-Z-_]+)\/issues\/[0-9]+/",$_issue->url,$matches)==1){
@@ -69,7 +70,9 @@ class Issue{
 		if(preg_match("/.*([0-9]\.[0-9]|Bug)$/",$_issue->milestone->title,$msversion)==1){
 			$this->milestone_version=$msversion[1];
 		}
-		$this->color=isset($VERSION_COLORS[$this->milestone_version])?$VERSION_COLORS[$this->milestone_version]:"000000";
+		
+		//$this->color=isset($VERSION_COLORS[$this->milestone_version])?$VERSION_COLORS[$this->milestone_version]:"000000";
+		
 		/*
 		switch($this->milestone_version){
 			case "1.0":
@@ -88,9 +91,27 @@ class Issue{
 				$timeStr=substr($label->name,5,strlen($label->name));
 				$seconds += (strtotime("+".$timeStr)-time());
 				$this->time=$seconds;
-				break;
+			}else if(startsWith($label->name,"priority:")){
+				$prioStr=substr($label->name,10,strlen($label->name));
+				switch($prioStr){
+					case "Low":
+						$this->tag_priority=1;
+						break;
+					case "Medium":
+						$this->tag_priority=2;
+						break;
+					case "High":
+						$this->tag_priority=3;
+						break;
+					case "Urgent":
+						$this->tag_priority=4;
+						break;
+				}
 			}
 		}
+		
+		$this->color=isset($PRIORITY_COLORS[$this->tag_priority])?$PRIORITY_COLORS[$this->tag_priority]:"000000";
+
 		// Default to 1 day
 		if(empty($this->time)){
 			$this->time=86400;

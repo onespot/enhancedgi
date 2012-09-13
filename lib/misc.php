@@ -8,6 +8,13 @@ $VERSION_COLORS=array(
 "1.3"=>"3c13af",
 );
 
+$PRIORITY_COLORS=array(
+1=>"ffcccc",
+2=>"ff9999",
+3=>"ff5555",
+4=>"ff0000",
+);
+
 function startsWith($haystack, $needle)
 {
     $length = strlen($needle);
@@ -56,6 +63,15 @@ function cmp_issue_priority( $a, $b )
 	return strcmp($a->_issue->title,$b->_issue->title) ; 
   } 
   return ($a->priority > $b->priority) ? -1 : 1;
+} 
+
+function cmp_tag_priority( $a, $b )
+{ 
+  if($a->tag_priority == $b->tag_priority){
+	return $b->priority - $a->priority;
+  }else{
+	return $b->tag_priority - $a->tag_priority;
+  }
 } 
 
 function cmp_finish_date( $a, $b )
