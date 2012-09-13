@@ -9,9 +9,9 @@ $VERSION_COLORS=array(
 );
 
 $PRIORITY_COLORS=array(
-1=>"ffcccc",
-2=>"ff9999",
-3=>"ff5555",
+1=>"33ff33",
+2=>"0088ff",
+3=>"ff8800",
 4=>"ff0000",
 );
 
@@ -93,6 +93,7 @@ function strToHexColor($string)
 }
 
 function getPriorityFromMilestone($milestone){
+	if(empty($milestone)) return 0;
 	$matches=array();
 	if(preg_match("/priority:[ ]*([0-9])/",$milestone->description,$matches)==1){
 		return $matches[1];

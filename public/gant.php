@@ -59,11 +59,31 @@ $features=$c->db->getFeatures();
 				  $('.result').html(data);
 				  maybeReload();
 				});
-			}else{
-				$.get('update_ticket_priority.php?repo='+repo+'&ticket='+ticket_id+'&action=update&priority='+actions[1], function(data) {
+			}else if(actions[1]=="Low"){
+				$.get('update_issue_priority_tag.php?repo='+repo+'&ticket='+ticket_id+'&priority=Low', function(data) {
 				  $('.result').html(data);
 				  maybeReload();
 				});
+			}else if(actions[1]=="Medium"){
+				$.get('update_issue_priority_tag.php?repo='+repo+'&ticket='+ticket_id+'&priority=Medium', function(data) {
+				  $('.result').html(data);
+				  maybeReload();
+				});
+			}else if(actions[1]=="High"){
+				$.get('update_issue_priority_tag.php?repo='+repo+'&ticket='+ticket_id+'&priority=High', function(data) {
+				  $('.result').html(data);
+				  maybeReload();
+				});
+			}else if(actions[1]=="Urgent"){
+				$.get('update_issue_priority_tag.php?repo='+repo+'&ticket='+ticket_id+'&priority=Urgent', function(data) {
+				  $('.result').html(data);
+				  maybeReload();
+				});
+			}else{
+				//$.get('update_ticket_priority.php?repo='+repo+'&ticket='+ticket_id+'&action=update&priority='+actions[1], function(data) {
+				 // $('.result').html(data);
+				  //maybeReload();
+				//});
 			}
 		}
 		
@@ -92,9 +112,21 @@ $features=$c->db->getFeatures();
 			<a title="Increase Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:increase"><img src="images/add.png" width="20px"/></a>
 			Increase Priority
 		</li>
-		 <li class="separator">
+		<li class="separator">
 			<a title="Decrease Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:decrease"><img src="images/remove.png" width="20px"/></a>
 			Decrease Priority
+		</li>
+		<li class="separator">
+			<a title="Low Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:Low">Low Priority</a>
+		</li>
+		<li class="separator">
+			<a title="Medium Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:Medium">Medium Priority</a>
+		</li>
+		<li class="separator">
+			<a title="High Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:High">High Priority</a>
+		</li>
+		<li class="separator">
+			<a title="Urgent Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:Urgent">Urgent Priority</a>
 		</li>
 	</ul>
 <?php } ?>

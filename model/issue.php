@@ -65,9 +65,9 @@ class Issue{
 				$this->feature_priority = $feature->priority;
 			}
 		}
-		$this->milestone_id=$_issue->milestone->number;
+		$this->milestone_id=isset($_issue->milestone)?$_issue->milestone->number:0;
 		$msversion=array();
-		if(preg_match("/.*([0-9]\.[0-9]|Bug)$/",$_issue->milestone->title,$msversion)==1){
+		if(preg_match("/.*([0-9]\.[0-9]|Bug)$/",isset($_issue->milestone)?$_issue->milestone->title:"",$msversion)==1){
 			$this->milestone_version=$msversion[1];
 		}
 		
@@ -86,6 +86,7 @@ class Issue{
 			break;
 		}
 		*/
+		$seconds=0;
 		foreach($_issue->labels as $label){
 			if(startsWith($label->name,"time:")){
 				$timeStr=substr($label->name,5,strlen($label->name));
