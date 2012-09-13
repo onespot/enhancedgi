@@ -111,6 +111,12 @@ class Issue{
 			}
 		}
 		
+		if($this->tag_priority==0){
+			if(strstr(strtolower($_issue->title),"urgent") || strstr(strtolower($_issue->title),"emergency") || strstr(strtolower($_issue->title),"priority")){
+				$this->tag_priority=4;
+			}
+		}
+		
 		$this->color=isset($PRIORITY_COLORS[$this->tag_priority])?$PRIORITY_COLORS[$this->tag_priority]:"000000";
 
 		// Default to 1 day

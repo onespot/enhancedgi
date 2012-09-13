@@ -152,16 +152,16 @@ $features=$c->db->getFeatures();
 			<a title="Decrease Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:decrease"><img src="images/remove.png" width="20px"/></a>
 			Move Down
 		</li>
-		<li class="separator">
+		<li class="separator" style="background-color:#33ff33;">
 			<a title="Low Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:Low">Low Priority</a>
 		</li>
-		<li class="separator">
+		<li class="separator" style="background-color:#0088ff;">
 			<a title="Medium Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:Medium">Medium Priority</a>
 		</li>
-		<li class="separator">
+		<li class="separator" style="background-color:#ff8800;">
 			<a title="High Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:High">High Priority</a>
 		</li>
-		<li class="separator">
+		<li class="separator" style="background-color:#ff0000;">
 			<a title="Urgent Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:Urgent">Urgent Priority</a>
 		</li>
 		<li class="separator">

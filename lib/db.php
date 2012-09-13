@@ -12,11 +12,16 @@ class Database{
 		
 		
 	public function __construct($dbname = 'enhancedgi',$dbuser="enhancedgi",$dbpass="poiulkjh19792012stak"){
-        $this->dbh = mysql_connect('amplifydev.cuzjy8kiwhgl.us-east-1.rds.amazonaws.com', $dbuser, $dbpass) 
+		if($_SERVER['SERVER_NAME']=="penrose"){
+			$this->dbh = mysql_connect('localhost', $dbuser, "poiulkjh") 
             or die("Unable to connect to MySQL");
+		}else{
+			$this->dbh = mysql_connect('amplifydev.cuzjy8kiwhgl.us-east-1.rds.amazonaws.com', $dbuser, $dbpass) 
+				or die("Unable to connect to MySQL");
+		}
         mysql_select_db($dbname);
     }
-	
+
 
 	
     function __destruct() {
