@@ -126,7 +126,7 @@ function updateIssueTimes($issues){
 	$time=strtotime(date("Y-m-d"));
 	foreach($issues as $issue){
 		$issue->estimated_start_time=$time+$runningcount;
-		$runningcount+=$issue->time;
+		$runningcount+=$issue->time==0?86400:$issue->time;
 		$issue->estimated_end_time=$time+$runningcount-1;
 		$weekend_days=weekendDays($issue->estimated_start_time,$issue->estimated_end_time);
 		$issue->estimated_end_time+=($weekend_days*86400);

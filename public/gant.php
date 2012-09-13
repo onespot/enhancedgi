@@ -79,6 +79,42 @@ $features=$c->db->getFeatures();
 				  $('.result').html(data);
 				  maybeReload();
 				});
+			}else if(actions[1]=="2h"){
+				$.get('update_issue_time_tag.php?repo='+repo+'&ticket='+ticket_id+'&time='+escape('2 hours'), function(data) {
+				  console.log(data);
+				  $('.result').html(data);
+				  maybeReload();
+				});
+			}else if(actions[1]=="4h"){
+				$.get('update_issue_time_tag.php?repo='+repo+'&ticket='+ticket_id+'&time='+escape('4 hours'), function(data) {
+				  console.log(data);
+				  $('.result').html(data);
+				  maybeReload();
+				});
+			}else if(actions[1]=="1d"){
+				$.get('update_issue_time_tag.php?repo='+repo+'&ticket='+ticket_id+'&time='+escape('1 day'), function(data) {
+				console.log(data);
+				  $('.result').html(data);
+				  maybeReload();
+				});
+			}else if(actions[1]=="2d"){
+				$.get('update_issue_time_tag.php?repo='+repo+'&ticket='+ticket_id+'&time='+escape('2 days'), function(data) {
+				  console.log(data);
+				  $('.result').html(data);
+				  maybeReload();
+				});
+			}else if(actions[1]=="3d"){
+				$.get('update_issue_time_tag.php?repo='+repo+'&ticket='+ticket_id+'&time='+escape('3 days'), function(data) {
+				  console.log(data);
+				  $('.result').html(data);
+				  maybeReload();
+				});
+			}else if(actions[1]=="1w"){
+				$.get('update_issue_time_tag.php?repo='+repo+'&ticket='+ticket_id+'&time='+escape('1 week'), function(data) {
+				  console.log(data);
+				  $('.result').html(data);
+				  maybeReload();
+				});
 			}else{
 				//$.get('update_ticket_priority.php?repo='+repo+'&ticket='+ticket_id+'&action=update&priority='+actions[1], function(data) {
 				 // $('.result').html(data);
@@ -110,11 +146,11 @@ $features=$c->db->getFeatures();
 	<ul id="<?php echo $issue->idForMenu; ?>-menu" class="contextMenu"> 
 		<li class="separator">
 			<a title="Increase Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:increase"><img src="images/add.png" width="20px"/></a>
-			Increase Priority
+			Move Up
 		</li>
 		<li class="separator">
 			<a title="Decrease Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:decrease"><img src="images/remove.png" width="20px"/></a>
-			Decrease Priority
+			Move Down
 		</li>
 		<li class="separator">
 			<a title="Low Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:Low">Low Priority</a>
@@ -127,6 +163,24 @@ $features=$c->db->getFeatures();
 		</li>
 		<li class="separator">
 			<a title="Urgent Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:Urgent">Urgent Priority</a>
+		</li>
+		<li class="separator">
+			<a title="2 Hours" style="display: inline; padding: 0; margin: 0;" href="#priority:-:2h">2 Hours</a>
+		</li>
+		<li class="separator">
+			<a title="4 Hours" style="display: inline; padding: 0; margin: 0;" href="#priority:-:4h">4 Hours</a>
+		</li>
+		<li class="separator">
+			<a title="1 Day" style="display: inline; padding: 0; margin: 0;" href="#priority:-:1d">1 Day</a>
+		</li>
+		<li class="separator">
+			<a title="2 Days" style="display: inline; padding: 0; margin: 0;" href="#priority:-:2d">2 Days</a>
+		</li>
+		<li class="separator">
+			<a title="3 Days" style="display: inline; padding: 0; margin: 0;" href="#priority:-:3d">3 Days</a>
+		</li>
+		<li class="separator">
+			<a title="1 Week" style="display: inline; padding: 0; margin: 0;" href="#priority:-:1w">1 Week</a>
 		</li>
 	</ul>
 <?php } ?>

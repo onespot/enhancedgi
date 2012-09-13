@@ -37,11 +37,11 @@ $c = new XmlController();
 			<pEnd><?php echo date("m/d/Y",$issue->estimated_end_time); ?></pEnd>
 			<pColor><?php echo $issue->color; ?></pColor>
 			<?php if(strtotime($issue->_issue->created_at) > strtotime(empty($_GET['last_review'])?"2034-01-01":$_GET['last_review'])){ ?>
-			<pBorderColor>000000</pBorderColor>
 			<pTextColor>00ff00</pTextColor>
-			<?php }else{ ?>
-			<pBorderColor><?php echo $issue->color; ?></pBorderColor>
+			<?php }else if($issue->time==0){ ?>
+			<pTextColor>ff0000</pTextColor>
 			<?php } ?>
+			<pBorderColor><?php echo $issue->color; ?></pBorderColor>
 			<pLink><?php echo $issue->_issue->html_url; ?></pLink>
 			<pMile>0</pMile>
 			<pRes><?php echo xmlEscape($issue->_issue->assignee->login) ?> [<?php echo ceil(($issue->time)/86400) ?> d] [p: <?php echo $issue->priority; ?>]</pRes>

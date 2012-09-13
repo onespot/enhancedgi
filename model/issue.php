@@ -88,8 +88,8 @@ class Issue{
 		*/
 		$seconds=0;
 		foreach($_issue->labels as $label){
-			if(startsWith($label->name,"time:")){
-				$timeStr=substr($label->name,5,strlen($label->name));
+			if(startsWith($label->name,"time: ")){
+				$timeStr=substr($label->name,6,strlen($label->name));
 				$seconds += (strtotime("+".$timeStr)-time());
 				$this->time=$seconds;
 			}else if(startsWith($label->name,"priority:")){
@@ -115,7 +115,7 @@ class Issue{
 
 		// Default to 1 day
 		if(empty($this->time)){
-			$this->time=86400;
+			$this->time=0;
 		}
 	}
 }
