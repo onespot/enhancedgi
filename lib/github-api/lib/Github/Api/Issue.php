@@ -21,10 +21,16 @@ class Github_Api_Issue extends Github_Api
     public function getList($username, $repo, $state = 'open')
     {
         //$response = $this->get('issues/list/'.urlencode($username).'/'.urlencode($repo).'/'.urlencode($state));
-		
+		$allIssues=array();
 		$response = $this->get('repos/'.urlencode($username).'/'.urlencode($repo).'/issues?state='.$state.'&per_page=100');
-		
-        return $response;
+		$allIssues = array_merge($response,$allIssues);
+		$page=2;
+		while(sizeof($response)==100){
+			$response = $this->get('repos/'.urlencode($username).'/'.urlencode($repo).'/issues?state='.$state.'&per_page=100&page='.$page);
+			$allIssues = array_merge($response,$allIssues);
+			$page++;
+		}
+        return $allIssues;
     }
 
 	public function getMilestones($username, $repo, $state = 'open')
