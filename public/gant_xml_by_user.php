@@ -32,7 +32,7 @@ $c = new XmlController();
 	?>
 		<task>
 			<pID><?php echo xmlEscape($id); ?></pID>
-			<pName><?php echo xmlEscape($issue->_issue->title); ?></pName>
+			<pName>#<?php echo xmlEscape($issue->_issue->number); ?> <?php echo xmlEscape($issue->_issue->title); ?></pName>
 			<pStart><?php echo date("m/d/Y",$issue->estimated_start_time); ?></pStart>
 			<pEnd><?php echo date("m/d/Y",$issue->estimated_end_time); ?></pEnd>
 			<pColor><?php echo $issue->color; ?></pColor>
