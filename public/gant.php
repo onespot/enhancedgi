@@ -223,6 +223,7 @@ $features=$c->db->getFeatures();
  <input type="text" name="last_review" id="datepicker" value="<?php echo $_GET['last_review']; ?>"><br />
  <input type="submit" value="submit" />
 </form>
+<a target="_blank" href="update_milestones.php?repo=amplify-back-end">Update Milestones</a>
 </div>
 
 <?php foreach($VERSION_COLORS as $key=>$val){?>
