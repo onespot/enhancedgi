@@ -185,44 +185,6 @@ $features=$c->db->getFeatures();
 	</ul>
 <?php } ?>
 
-<!-- setting priority
-<?php 
-	foreach($c->issues as $issue) {
-?>
-	<ul id="<?php echo $issue->idForMenu; ?>-menu" class="contextMenu"> 
-	<?php foreach(array(0,1,2,3,4,5,6,7,8,9,10) as $priority){ ?>
-    <li class="separator">
-        <a title="Priority <?php echo $priority; ?>" style="display: inline; padding: 0; margin: 0;" href="#priority:-:<?php echo $priority; ?>"><img src="images/add.png" width="20px"/></a>
-		Priority <?php echo $priority; ?>
-    </li>
-	<?php } ?>
-</ul>
-<?php } ?>
--->
-<!-- old feature stuff
-<?php 
-	foreach($c->issues as $issue) {
-		$issue_features=$c->db->getIssueFeatures($issue->repo,$issue->number);
-?>
-	<ul id="<?php echo $issue->id; ?>-menu" class="contextMenu"> 
-	<?php foreach($issue_features as $feature){ ?>
-	<li class="separator">
-		<a title="Remove from <?php echo $feature->title; ?>"  style="display: inline; padding: 0; margin: 0;" href="#remove:-:<?php echo $feature->id; ?>"><img src="images/remove.png" width="20px"/></a>
-		<?php echo substr($feature->title,0,50); ?>...
-    </li>
-	<?php } ?>
-	<?php foreach($features as $feature){ 
-		// dont ad the issue twice
-		if(in_array($feature,$issue_features)) continue;
-	?>
-    <li class="separator">
-        <a title="Add to <?php echo $feature->title; ?>" style="display: inline; padding: 0; margin: 0;" href="#add:-:<?php echo $feature->id; ?>"><img src="images/add.png" width="20px"/></a>
-		<?php echo substr($feature->title,0,50); ?>...
-    </li>
-	<?php } ?>
-</ul>
-<?php } ?>
--->
 <div id="selector">
 <form method="get">
 <?php if(isset($_GET['mode'])){ ?>
