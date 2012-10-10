@@ -9,8 +9,19 @@ foreach($c->issuesByMilestone as $milestoneName => $issues){
 		$milestone=$c->milestones[$milestoneName];
 		// get the finish date of the final issue
 		$lastIssue=$issues[sizeof($issues)-1];
-		$c->githubv3->api('issue')->milestones()->update('onespot', $repo, $milestone->number,  array('due_on' => date(DATE_ATOM,$lastIssue->estimated_end_time)));
-		echo $milestone->number." : ".$milestoneName ." : ". date(DATE_ATOM,$lastIssue->estimated_end_time)."<br />";
+		$totalTime=0;
+		foreach($issues as $issue){
+			$totalTime+=$issue->time;
+		}
+		$matches=array();
+		$title=$milestone->title;
+		if(preg_match("/(.*)( \(.*\))/",$title,$matches)){
+			$title = $matches[1];
+		}
+		$days=ceil($totalTime/86400);
+		$title=$title . " (" . $days . " day".($days>1?"s":"").")";
+		$c->githubv3->api('issue')->milestones()->update('onespot', $repo, $milestone->number,  array('title' => $title,'due_on' => date(DATE_ATOM,$lastIssue->estimated_end_time)));
+		echo $title." - ".$milestone->number." : ". date(DATE_ATOM,$lastIssue->estimated_end_time)."<br />";
 	}
 }
 ?>
