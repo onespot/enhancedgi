@@ -8,7 +8,7 @@ $c = new XmlController();
 	foreach($c->issuesByUser as $key => $val){ 
 	$id++;
 	$parent_id=$id;
-	$milestone=$c->milestones[$key];
+	//$milestone=$c->milestones[$key];
 ?>
 	<task>
 		<pID><?php echo xmlEscape($id); ?></pID>
@@ -23,7 +23,8 @@ $c = new XmlController();
 		<pComp>0</pComp>
 		<pGroup>1</pGroup>
 		<pParent></pParent>
-		<pOpen>1</pOpen>
+		<pOpen><?php echo (isset($_GET['showmine']) && $_GET['showmine']=='true' && xmlEscape($key) != $_SERVER['PHP_AUTH_USER'])?"0":"1"; ?></pOpen>
+		<!-- <pOpen>1</pOpen> -->
 		<pDepend></pDepend>
 	</task>
 	<?php

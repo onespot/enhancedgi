@@ -219,6 +219,7 @@ $features=$c->db->getFeatures();
  <input type="radio" name="mode" value="user" <?php echo ((!isset($_GET['mode'])) || ($_GET['mode']=="user"))?"checked":"" ?> /> Developer<br />
  <input type="radio" name="mode" value="milestone" <?php echo ($_GET['mode']=="milestone")?"checked":"" ?> /> Milestone<br />
  <input type="checkbox" name="batchmode" value="true" <?php echo (isset($_GET['batchmode']) && $_GET['batchmode']=="true")?"checked":"" ?> />Batch Mode<br />
+ <input type="checkbox" name="showmine" value="true" <?php echo (isset($_GET['showmine']) && $_GET['showmine']=="true")?"checked":"" ?> />Show Mine<br />
  Last Reviewed<br />
  <input type="text" name="last_review" id="datepicker" value="<?php echo $_GET['last_review']; ?>"><br />
  <input type="submit" value="submit" />
@@ -246,10 +247,10 @@ g.setFormatArr("day","week","month"); // Set format options (up to 4 : "minute",
 
 //g.AddTaskItem(new JSGantt.TaskItem(1,   'Define Chart API',     '',          '',          'ff0000', 'http://help.com', 0, 'Brian',     0, 1, 0, 1));
 //g.AddTaskItem(new JSGantt.TaskItem(11,  'Chart Object',         '2/10/2008', '2/10/2008', 'ff00ff', 'http://www.yahoo.com', 1, 'Shlomy',  100, 0, 1, 1, "121,122", "My Caption"));
-<?php if($_GET['mode']=="milestone") {?>
+<?php if(isset($_GET['mode']) && $_GET['mode']=="milestone") {?>
 JSGantt.parseXML("gant_xml.php<?php echo $getvals ?>",g);
 <?php }else{?>
-JSGantt.parseXML("gant_xml_by_user.php<?php echo $getvals ?>&last_review=<?php echo $_GET['last_review']; ?>",g);
+JSGantt.parseXML("gant_xml_by_user.php<?php echo $getvals ?>last_review=<?php echo $_GET['last_review']; ?>&showmine=<?php echo $_GET['showmine']; ?>",g);
 <?php } ?>
 g.Draw();	
 g.DrawDependencies();
