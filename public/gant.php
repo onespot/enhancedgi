@@ -1,9 +1,12 @@
 <?php
-require ('../control/issues.php'); 
-$c = new IssuesController();	
-
-// load features from disk
-$features=$c->db->getFeatures();
+	require ('../control/issues.php'); 
+	$c = new IssuesController();	
+	$getvals="?";
+	if(isset($_GET['repos'])){
+		foreach($_GET['repos'] as $repo){
+			$getvals=$getvals."repos[]=".$repo."&";
+		}
+	}
 ?>
 <html>
 
@@ -15,6 +18,7 @@ $features=$c->db->getFeatures();
 	<!-- <script language="javascript" src="js/jquery-1.4.2.min.js"></script> -->
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
 	<script language="javascript" src="js/jquery.contextMenu.js"></script>
+	<script language="javascript" src="js/block.ui.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
 	<script language="javascript" src="js/jsgantt.js"></script>
 	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/base/jquery-ui.css" type="text/css" media="all" />
@@ -41,10 +45,59 @@ $features=$c->db->getFeatures();
 		}
 		
 		function maybeReload(){
-			<?php if(isset($_GET['batchmode']) && $_GET['batchmode']=="true"){?>
+			<?php if(isset($_GET['batchmode']) && $_GET['batchmode']=="true"){ ?>
+				  reDraw(true);
 				  return;
 			<?php } ?>
 			window.location.reload();
+		}
+		
+		function showLoading(){
+			console.log("loading gif");
+			$.blockUI({ message: '<h1><img src="images/loading.gif" /> Just a moment...</h1>' });
+		}
+		
+		function hideLoading(){
+			$.unblockUI();
+		}
+		
+		function attachMenus(){
+			console.log(new Date().getTime()+" Attaching menus");
+			<?php foreach($c->issues as $issue) { ?>
+				setTimeout(function(){
+						//console.log(new Date().getTime()+" Setting menu");
+						$("#<?php echo $issue->idForMenu; ?>").contextMenu({
+							menu: "<?php echo $issue->idForMenu; ?>-menu"
+						},
+						function(action, el, pos) {
+							updateTicketPriority(action, '<?php echo $issue->repo ?>', <?php echo $issue->number; ?>);
+						})
+					}
+				,10);
+			<?php } ?>
+			console.log(new Date().getTime()+" Menus Attached");
+		}
+		
+		function reDraw(reset){
+			//showLoading();
+			console.log(new Date().getTime()+" Redraw");
+			if(reset){
+				g.Reset();
+			}
+			<?php if(isset($_GET['mode']) && $_GET['mode']=="milestone") {?>
+			console.log(new Date().getTime()+" Parsing xml");
+			JSGantt.parseXML("gant_xml.php<?php echo $getvals ?>",g);
+			<?php }else{?>
+			console.log(new Date().getTime()+" Parsing xml");
+			JSGantt.parseXML("gant_xml_by_user.php<?php echo $getvals ?>last_review=<?php echo isset($_GET['last_review'])?$_GET['last_review']:""; ?>&showmine=<?php echo isset($_GET['showmine'])?$_GET['showmine']:""; ?>",g);
+			<?php } ?>
+			console.log(new Date().getTime()+" Drawing");
+			g.Draw();	
+			g.DrawDependencies();
+			console.log(new Date().getTime()+" Setting menus");
+			attachMenus();
+			console.log(new Date().getTime()+" Redrawn");
+			//hideLoading();
 		}
 		
 		function updateTicketPriority(action, repo, ticket_id){	
@@ -52,30 +105,48 @@ $features=$c->db->getFeatures();
 			if(actions[1]=="increase"){
 				$.get('update_ticket_priority.php?repo='+repo+'&ticket='+ticket_id+'&action=increase', function(data) {
 				  $('.result').html(data);
+					console.log(data);
 					maybeReload();
 				});
 			}else if(actions[1]=="decrease"){
 				$.get('update_ticket_priority.php?repo='+repo+'&ticket='+ticket_id+'&action=decrease', function(data) {
+				  console.log(data);
+				  $('.result').html(data);
+				  maybeReload();
+				});
+			}else if(actions[1]=="boost"){
+				$.get('update_ticket_priority.php?repo='+repo+'&ticket='+ticket_id+'&action=boost', function(data) {
+				  console.log(data);
+				  $('.result').html(data);
+				  maybeReload();
+				});
+			}else if(actions[1]=="bury"){
+				$.get('update_ticket_priority.php?repo='+repo+'&ticket='+ticket_id+'&action=bury', function(data) {
+				  console.log(data);
 				  $('.result').html(data);
 				  maybeReload();
 				});
 			}else if(actions[1]=="Low"){
 				$.get('update_issue_priority_tag.php?repo='+repo+'&ticket='+ticket_id+'&priority=Low', function(data) {
+				  console.log(data);
 				  $('.result').html(data);
 				  maybeReload();
 				});
 			}else if(actions[1]=="Medium"){
 				$.get('update_issue_priority_tag.php?repo='+repo+'&ticket='+ticket_id+'&priority=Medium', function(data) {
+				  console.log(data);
 				  $('.result').html(data);
 				  maybeReload();
 				});
 			}else if(actions[1]=="High"){
 				$.get('update_issue_priority_tag.php?repo='+repo+'&ticket='+ticket_id+'&priority=High', function(data) {
+				  console.log(data);
 				  $('.result').html(data);
 				  maybeReload();
 				});
 			}else if(actions[1]=="Urgent"){
 				$.get('update_issue_priority_tag.php?repo='+repo+'&ticket='+ticket_id+'&priority=Urgent', function(data) {
+			      console.log(data);
 				  $('.result').html(data);
 				  maybeReload();
 				});
@@ -115,6 +186,8 @@ $features=$c->db->getFeatures();
 				  $('.result').html(data);
 				  maybeReload();
 				});
+			}else if(actions[1]=="redraw"){
+				reDraw(true);
 			}else{
 				//$.get('update_ticket_priority.php?repo='+repo+'&ticket='+ticket_id+'&action=update&priority='+actions[1], function(data) {
 				 // $('.result').html(data);
@@ -122,20 +195,6 @@ $features=$c->db->getFeatures();
 				//});
 			}
 		}
-		
-		$(document).ready( function() {
-			<?php foreach($c->issues as $issue) { ?>
-			$("#<?php echo $issue->idForMenu; ?>").contextMenu({
-				menu: "<?php echo $issue->idForMenu; ?>-menu"
-			},
-				function(action, el, pos) {
-					updateTicketPriority(action, '<?php echo $issue->repo ?>', <?php echo $issue->number; ?>);
-				}
-			);
-			<?php } ?>
-		});
-		
-		
 	</script>
 </head>
 <body>
@@ -145,12 +204,20 @@ $features=$c->db->getFeatures();
 ?>
 	<ul id="<?php echo $issue->idForMenu; ?>-menu" class="contextMenu"> 
 		<li class="separator">
+			<a title="Boost Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:boost"><img src="images/add.png" width="20px"/></a>
+			Boost
+		</li>
+		<li class="separator">
 			<a title="Increase Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:increase"><img src="images/add.png" width="20px"/></a>
 			Move Up
 		</li>
 		<li class="separator">
 			<a title="Decrease Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:decrease"><img src="images/remove.png" width="20px"/></a>
 			Move Down
+		</li>
+		<li class="separator">
+			<a title="Bury Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:bury"><img src="images/remove.png" width="20px"/></a>
+			Bury
 		</li>
 		<li class="separator" style="background-color:#33ff33;">
 			<a title="Low Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:Low">Low Priority</a>
@@ -182,6 +249,9 @@ $features=$c->db->getFeatures();
 		<li class="separator">
 			<a title="1 Week" style="display: inline; padding: 0; margin: 0;" href="#priority:-:1w">1 Week</a>
 		</li>
+		<li class="separator">
+			<a title="Redraw" style="display: inline; padding: 0; margin: 0;" href="#priority:-:redraw">Redraw</a>
+		</li>
 	</ul>
 <?php } ?>
 
@@ -195,12 +265,6 @@ $features=$c->db->getFeatures();
 <table>
 	<tr>
 <?php 
-	$getvals="?";
-	if(isset($_GET['repos'])){
-		foreach($_GET['repos'] as $repo){
-			$getvals=$getvals."repos[]=".$repo."&";
-		}
-	}
 	$row=1;
 	foreach($c->repos as $repo){
 ?>
@@ -233,28 +297,32 @@ $features=$c->db->getFeatures();
 <div style="position:relative" class="gantt" id="GanttChartDIV"></div>
 
 <script language="javascript">
-
-var g = new JSGantt.GanttChart('g',document.getElementById('GanttChartDIV'), 'day');
-g.setShowRes(0); // Show/Hide Responsible (0/1)
-g.setShowDur(0); // Show/Hide Duration (0/1)
-g.setShowComp(0); // Show/Hide % Complete(0/1)
-g.setCaptionType('Resource');  // Set to Show Caption (None,Caption,Resource,Duration,Complete)
-g.setShowStartDate(0); // Show/Hide Start Date(0/1)
-g.setShowEndDate(0); // Show/Hide End Date(0/1)
-g.setDateInputFormat('mm/dd/yyyy');  // Set format of input dates ('mm/dd/yyyy', 'dd/mm/yyyy', 'yyyy-mm-dd')
-g.setDateDisplayFormat('mm/dd/yyyy'); // Set format to display dates ('mm/dd/yyyy', 'dd/mm/yyyy', 'yyyy-mm-dd')
-g.setFormatArr("day","week","month"); // Set format options (up to 4 : "minute","hour","day","week","month","quarter")
+		var g = new JSGantt.GanttChart('g',document.getElementById('GanttChartDIV'), 'day');
+		g.setShowRes(0); // Show/Hide Responsible (0/1)
+		g.setShowDur(0); // Show/Hide Duration (0/1)
+		g.setShowComp(0); // Show/Hide % Complete(0/1)
+		g.setCaptionType('Resource');  // Set to Show Caption (None,Caption,Resource,Duration,Complete)
+		g.setShowStartDate(0); // Show/Hide Start Date(0/1)
+		g.setShowEndDate(0); // Show/Hide End Date(0/1)
+		g.setDateInputFormat('mm/dd/yyyy');  // Set format of input dates ('mm/dd/yyyy', 'dd/mm/yyyy', 'yyyy-mm-dd')
+		g.setDateDisplayFormat('mm/dd/yyyy'); // Set format to display dates ('mm/dd/yyyy', 'dd/mm/yyyy', 'yyyy-mm-dd')
+		g.setFormatArr("day","week","month"); // Set format options (up to 4 : "minute","hour","day","week","month","quarter")
 
 //g.AddTaskItem(new JSGantt.TaskItem(1,   'Define Chart API',     '',          '',          'ff0000', 'http://help.com', 0, 'Brian',     0, 1, 0, 1));
 //g.AddTaskItem(new JSGantt.TaskItem(11,  'Chart Object',         '2/10/2008', '2/10/2008', 'ff00ff', 'http://www.yahoo.com', 1, 'Shlomy',  100, 0, 1, 1, "121,122", "My Caption"));
+/*
 <?php if(isset($_GET['mode']) && $_GET['mode']=="milestone") {?>
 JSGantt.parseXML("gant_xml.php<?php echo $getvals ?>",g);
 <?php }else{?>
-JSGantt.parseXML("gant_xml_by_user.php<?php echo $getvals ?>last_review=<?php echo $_GET['last_review']; ?>&showmine=<?php echo $_GET['showmine']; ?>",g);
+JSGantt.parseXML("gant_xml_by_user.php<?php echo $getvals ?>last_review=<?php echo isset($_GET['last_review'])?$_GET['last_review']:""; ?>&showmine=<?php echo isset($_GET['showmine'])?$_GET['showmine']:""; ?>",g);
 <?php } ?>
+
 g.Draw();	
 g.DrawDependencies();
-
+*/
+$(document).ready( function() {
+	reDraw(false);
+});	
 </script>
 
 </body>

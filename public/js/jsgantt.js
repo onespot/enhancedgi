@@ -791,6 +791,12 @@ Complete-Displays task percent complete</p>
       {
          vTaskList.push(value);
       };
+
+this.Reset = function(value)
+      {
+         vTaskList.length=0;
+      };
+	  
 /**
 * Returns task list Array
 * @method getList
@@ -929,8 +935,7 @@ Complete-Displays task percent complete</p>
 
                for(var k=0;k<n;k++) {
                   var vTask = this.getArrayLocationByID(vDepList[k]);
-
-                  if(vList[vTask].getVisible()==1)
+                  if(typeof vList[vTask] != 'undefined' && vList[vTask].getVisible()==1)
                      this.drawDependency(vList[vTask].getEndX(),vList[vTask].getEndY(),vList[i].getStartX()-1,vList[i].getStartY())
                }
   	    }
@@ -957,6 +962,7 @@ Complete-Displays task percent complete</p>
 * @return {Void}
 */ this.Draw = function()
    {
+	  console.log(new Date().getTime()+" Starting Draw");
       var vMaxDate = new Date();
       var vMinDate = new Date();	
       var vTmpDate = new Date();
@@ -982,10 +988,10 @@ Complete-Displays task percent complete</p>
       var vLeftWidth = 15 + 220 + 70 + 70 + 70 + 70 + 70;
       if(vTaskList.length > 0)
       {
-        
+         console.log(new Date().getTime()+" CP 1");
 		   // Process all tasks preset parent date and completion %
          JSGantt.processRows(vTaskList, 0, -1, 1, 1);
-
+		console.log(new Date().getTime()+" CP 2");
          // get overall min/max dates plus padding
          vMinDate = JSGantt.getMinDate(vTaskList, vFormat);
          vMaxDate = JSGantt.getMaxDate(vTaskList, vFormat);
@@ -1070,7 +1076,7 @@ Complete-Displays task percent complete</p>
          if(vShowEndDate==1) vLeftTable += '  <TD style="BORDER-TOP: #efefef 1px solid; FONT-SIZE: 12px; BORDER-LEFT: #efefef 1px solid; WIDTH: 60px; HEIGHT: 20px" align=center nowrap>End Date</TD>' ;
  
          vLeftTable += '</TR>';
-
+			console.log(new Date().getTime()+" CP 3");
             for(i = 0; i < vTaskList.length; i++)
             {
                if( vTaskList[i].getGroup()) {
@@ -1121,7 +1127,7 @@ Complete-Displays task percent complete</p>
                vLeftTable += '</TR>';
 
             }
-
+			console.log(new Date().getTime()+" CP 4");
             // DRAW the date format selector at bottom left.  Another potential GanttChart parameter to hide/show this selector
             vLeftTable += '</TD></TR>' +
               '<TR><TD border=1 colspan=5 align=left style="BORDER-TOP: #efefef 1px solid; FONT-SIZE: 11px; BORDER-LEFT: #efefef 1px solid; height=18px">&nbsp;&nbsp;Powered by <a href=http://www.jsgantt.com>jsGantt</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Format:';
@@ -1172,7 +1178,8 @@ Complete-Displays task percent complete</p>
             vTmpDate.setFullYear(vMinDate.getFullYear(), vMinDate.getMonth(), vMinDate.getDate());
             vTmpDate.setHours(0);
             vTmpDate.setMinutes(0);
-
+		 
+		 console.log(new Date().getTime()+" CP 5");
          // Major Date Header
          while(Date.parse(vTmpDate) <= Date.parse(vMaxDate))
          {	
@@ -1227,14 +1234,14 @@ Complete-Displays task percent complete</p>
             }
 
          }
-
+		console.log(new Date().getTime()+" CP 6");
          vRightTable += '</TR><TR>';
 
          // Minor Date header and Cell Rows
          vTmpDate.setFullYear(vMinDate.getFullYear(), vMinDate.getMonth(), vMinDate.getDate());
          vNxtDate.setFullYear(vMinDate.getFullYear(), vMinDate.getMonth(), vMinDate.getDate());
          vNumCols = 0;
- 
+		console.log(new Date().getTime()+" CP 7");
          while(Date.parse(vTmpDate) <= Date.parse(vMaxDate))
          {	
             if (vFormat == 'minute')
@@ -1398,12 +1405,12 @@ Complete-Displays task percent complete</p>
 
             }
          }
-
+		console.log(new Date().getTime()+" CP 8");
          vRightTable += vDateRowStr + '</TR>';
          vRightTable += '</TBODY></TABLE>';
 
          // Draw each row
-
+		console.log(new Date().getTime()+" CP 9");
          for(i = 0; i < vTaskList.length; i++)
 
          {
@@ -1565,13 +1572,13 @@ Complete-Displays task percent complete</p>
             vRightTable += '</DIV>';
 
          }
-
+		console.log(new Date().getTime()+" CP 10");
          vMainTable += vRightTable + '</DIV></TD></TR></TBODY></TABLE></BODY></HTML>';
-
+		 console.log(new Date().getTime()+" CP 11");
 		   vDiv.innerHTML = vMainTable;
-
+		console.log(new Date().getTime()+" CP 12");
       }
-
+		console.log(new Date().getTime()+" Finished Draw");
    }; //this.draw
 
 /**
@@ -2190,6 +2197,7 @@ JSGantt.parseXML = function(ThisFile,pGanttVar){
 		JSGantt.ChromeLoadXML(ThisFile,pGanttVar);	
 		ta=null;	// a little tidying	
 	}
+	console.log(new Date().getTime()+" finished parsing xml");
 };
 
 /**
@@ -2279,6 +2287,8 @@ JSGantt.AddXMLTask = function(pGanttVar){
 	}
 };
 
+JSGantt.cachedXMLData = false;
+
 /**
 * Load an XML document in Chrome
 *
@@ -2289,12 +2299,22 @@ JSGantt.AddXMLTask = function(pGanttVar){
 */
 JSGantt.ChromeLoadXML = function(ThisFile,pGanttVar){
 // Thanks to vodobas at mindlence,com for the initial pointers here.
-	XMLLoader = new XMLHttpRequest();
-	XMLLoader.onreadystatechange= function(){
-    JSGantt.ChromeXMLParse(pGanttVar);
-	};
-	XMLLoader.open("GET", ThisFile, false);
-	XMLLoader.send(null);
+	console.log(new Date().getTime()+" loading xml");
+	//if(JSGantt.cachedXMLData === false){
+		XMLLoader = new XMLHttpRequest();
+		XMLLoader.onreadystatechange= function(){
+			if (XMLLoader.readyState == 4) {
+				console.log(new Date().getTime()+" loaded xml");
+				JSGantt.ChromeXMLParse(pGanttVar);
+				console.log(new Date().getTime()+" parsed xml");
+			}
+		};
+		XMLLoader.open("GET", ThisFile, false);
+		XMLLoader.send(null);
+	//}else{
+	//}else{
+	//	JSGantt.ChromeXMLParse(pGanttVar);
+	//}
 };
 
 /**
@@ -2307,11 +2327,15 @@ JSGantt.ChromeLoadXML = function(ThisFile,pGanttVar){
 
 JSGantt.ChromeXMLParse = function (pGanttVar){
 // Manually parse the file as it is loads quicker
+	//JSGantt.cachedXMLData = JSGantt.cachedXMLData === false && XMLLoader.readyState == 4 ? XMLLoader.responseText:JSGantt.cachedXMLData;
+	//if (JSGantt.cachedXMLData != false || XMLLoader.readyState == 4) {
 	if (XMLLoader.readyState == 4) {
 		var ta=XMLLoader.responseText.split(/<task>/gi);
-
+		//var ta=JSGantt.cachedXMLData.split(/<task>/gi);
+		console.log(new Date().getTime()+" Adding tasks");
 		var n = ta.length;	// the number of tasks. 
 		for(var i=1;i<n;i++) {
+			//console.log(new Date().getTime()+" Adding task item");
 			Task = ta[i].replace(/<[/]p/g, '<p');	
 			var te = Task.split(/<pid>/i);
 		
@@ -2376,9 +2400,12 @@ JSGantt.ChromeXMLParse = function (pGanttVar){
 			var te = Task.split(/<pGhMs>/i);
 			if(te.length> 2){var pGhMs=te[1];} else {var pGhMs = "";}
 			
+			//console.log(new Date().getTime()+" Set task variables");
 			// Finally add the task
 			pGanttVar.AddTaskItem(new JSGantt.TaskItem(pID , pName, pStart, pEnd, pColor, pBorderColor, pTextColor, pLink, pMile, pRes,  pComp, pGroup, pParent, pOpen, pDepend,pCaption,pGhId,pGhMs));
+			//console.log(new Date().getTime()+" Added task item");
 		};
+		console.log(new Date().getTime()+" Added tasks");
 	};
 };
 /**

@@ -60,8 +60,8 @@ class Database{
         }
 	}
 	
-	function updateIssuePriority($repo,$issue_id,$priority){
-	   $insert="INSERT INTO issue_priority VALUES('$repo',$issue_id,$priority) ON DUPLICATE KEY UPDATE priority=$priority";
+	function updateIssuePriority($repo,$issue_id,$priority,$owner="nobody",$tag_priority=0){
+	   $insert="INSERT INTO issue_priority VALUES('$repo',$issue_id,$priority,'$owner',$tag_priority) ON DUPLICATE KEY UPDATE priority=$priority";
 	   $result = mysql_query($insert);
         if(!$result) {
             die("Error updating issue priority : " . mysql_error());
@@ -81,6 +81,14 @@ class Database{
 	   $result = mysql_query($insert);
         if(!$result) {
             die("Error updating issue priority : " . mysql_error());
+        }
+	}
+	
+	function deleteIssuePriority($repo,$issue_id){
+		$delete="DELETE FROM issue_priority where issue_repo='$repo' and issue_id=$issue_id";
+        $result = mysql_query($delete);
+        if(!$result) {
+            die("Error deleting issues features : " . mysql_error());
         }
 	}
 	
@@ -110,8 +118,88 @@ class Database{
         return $results;
     }
 	
+	function createIssuePriority($repo,$issue_id,$owner,$tag_prio){
+        $query = "SELECT max(priority) as max_priority
+				  FROM issue_priority
+				  WHERE owner='$owner' and tag_priority=$tag_prio";
+        $result = mysql_query($query);
+        if(!$result) {
+             die("Error getting features from db : " . mysql_error());
+        }
+        $row = mysql_fetch_object($result);
+		$new_priority=0;
+		if(isset($row->max_priority)){
+			$new_priority = $row->max_priority + 1;
+		}
+		$insert="insert into issue_priority values('$repo','$issue_id',$new_priority,'$owner','$tag_prio')";
+		$result = mysql_query($insert);
+        if(!$result) {
+             die("Error inserting issue priority : " . mysql_error());
+        }
+		return $new_priority;
+    }
+	
+	function swapPrioritys($repo1,$issue1,$repo2,$issue2){
+		$prio1=$this->getIssuePriority($repo1,$issue1)->priority;
+		$prio2=$this->getIssuePriority($repo2,$issue2)->priority;
+		$this->updateIssuePriority($repo2,$issue2,$prio1);
+		$this->updateIssuePriority($repo1,$issue1,$prio2);
+	}
+	
+	function upPriority($repo,$issue_id){
+		$prio=$this->getIssuePriority($repo,$issue_id);
+		if($prio->priority>0){
+			$query = "SELECT *
+				  FROM issue_priority
+				  WHERE issue_priority.owner='$prio->owner' and tag_priority=".$prio->tag_priority." and issue_priority.priority<".$prio->priority." order by priority desc limit 1";
+			$result = mysql_query($query);
+			if(!$result) {
+				 die("Error getting next priority from db : " . mysql_error());
+			}
+			$row = mysql_fetch_object($result);
+			if(isset($row)){
+				$this->swapPrioritys($repo,$issue_id,$row->issue_repo,$row->issue_id);
+			}else{
+				die("Issue with priority ".($prio->priority-1)." doesnt exist for user ".$prio->owner);
+			}
+		}else{
+			return false;
+		}
+		return true;
+	}
+	
+	function bury($repo,$issue_id){
+		while($this->downPriority($repo,$issue_id)){
+			// burying
+		}
+	}
+	
+	function boost($repo,$issue_id){
+		while($this->upPriority($repo,$issue_id)){
+			// boosting
+		}
+	}
+	
+	function downPriority($repo,$issue_id){
+		$prio=$this->getIssuePriority($repo,$issue_id);
+		$query = "SELECT *
+			  FROM issue_priority
+			  WHERE issue_priority.owner='$prio->owner' and tag_priority=".$prio->tag_priority." and issue_priority.priority>".$prio->priority." order by priority asc limit 1";
+		$result = mysql_query($query);
+		if(!$result) {
+			 die("Error getting features from db : " . mysql_error());
+		}
+		$row = mysql_fetch_object($result);
+		if(!empty($row)){
+			$this->swapPrioritys($repo,$issue_id,$row->issue_repo,$row->issue_id);
+		}else{
+			return false;
+		}
+		return true;
+	}
+	
 	function getIssuePriority($repo,$issue_id){
-        $query = "SELECT issue_priority.priority
+        $query = "SELECT *
 				  FROM issue_priority
 				  WHERE issue_priority.issue_repo='$repo' AND 
 					    issue_priority.issue_id=$issue_id";
@@ -120,10 +208,10 @@ class Database{
              die("Error getting features from db : " . mysql_error());
         }
         $row = mysql_fetch_object($result);
-		if(isset($row->priority)){
-			return $row->priority;
+		if(isset($row)){
+			return $row;
 		}else{
-			return 0;
+			return null;
 		}
     }
 }

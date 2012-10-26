@@ -1,6 +1,10 @@
 <?php
 require ('../control/xml.php'); 
+$then=microtime(true);
 $c = new XmlController();
+$now=microtime(true);
+//echo "time taken = ".($now-$then)."\n";
+$then=microtime(true);
 ?>
 <project>
 <?php 
@@ -50,12 +54,14 @@ $c = new XmlController();
 			<pGroup>0</pGroup>
 			<pParent><?php echo $parent_id; ?></pParent>
 			<pOpen>1</pOpen>
-			<pDepend><?php echo $c->xmlKeyMap[$issue->dependsOnKey]; ?></pDepend>
+			<pDepend><?php echo isset($c->xmlKeyMap[$issue->dependsOnKey])?$c->xmlKeyMap[$issue->dependsOnKey]:""; ?></pDepend>
 			<pGhId><?php echo $issue->idForMenu; ?></pGhId>
-			<pGhMs><?php echo $issue->_issue->milestone->title; ?></pGhMs>
+			<pGhMs><?php echo isset($issue->_issue->milestone)?$issue->_issue->milestone->title:""; ?></pGhMs>
 		</task>
 <?php 
 		}
 	} 
+$now=microtime(true);
+//echo "time taken = ".($now-$then)."\n";
 ?>
 </project>

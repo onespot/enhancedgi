@@ -57,35 +57,7 @@ class Issue{
 		$this->number=$_issue->number;
 		$this->_issue=$_issue;
 		$this->milestone_priority = getPriorityFromMilestone($_issue->milestone);
-		$this->priority=$db->getIssuePriority($matches[2],$_issue->number);
-		//$this->features = getFeaturesFromText($_issue->body);
-		$this->features = $db->getIssueFeatures($matches[2],$_issue->number);
-		foreach($this->features as $feature){
-			if($this->feature_priority > $feature->priority){
-				$this->feature_priority = $feature->priority;
-			}
-		}
-		$this->milestone_id=isset($_issue->milestone)?$_issue->milestone->number:0;
-		$msversion=array();
-		if(preg_match("/.*([0-9]\.[0-9]|Bug)$/",isset($_issue->milestone)?$_issue->milestone->title:"",$msversion)==1){
-			$this->milestone_version=$msversion[1];
-		}
 		
-		//$this->color=isset($VERSION_COLORS[$this->milestone_version])?$VERSION_COLORS[$this->milestone_version]:"000000";
-		
-		/*
-		switch($this->milestone_version){
-			case "1.0":
-				$this->color=$VERSION_COLORS["1.0"];
-				break;
-			case "2.0":
-				$this->color=$VERSION_COLORS["2.0"];
-				break;
-			default:
-				$this->color="000000";
-			break;
-		}
-		*/
 		$seconds=0;
 		foreach($_issue->labels as $label){
 			if(startsWith($label->name,"time: ")){
@@ -119,6 +91,48 @@ class Issue{
 		
 		$this->color=isset($PRIORITY_COLORS[$this->tag_priority])?$PRIORITY_COLORS[$this->tag_priority]:"000000";
 
+		
+		$issue_prio = $db->getIssuePriority($matches[2],$_issue->number);
+		$assignee = isset($this->_issue->assignee)?$this->_issue->assignee->login:"nobody";
+		if(!empty($issue_prio) && ($issue_prio->owner != $assignee || $issue_prio->tag_priority != $this->tag_priority)){
+			$db->deleteIssuePriority($matches[2],$this->_issue->number);
+			$db->createIssuePriority($matches[2],$this->_issue->number,$assignee,$this->tag_priority);
+		}else if(empty($issue_prio)){
+			$db->createIssuePriority($matches[2],$this->_issue->number,$assignee,$this->tag_priority);
+		}
+		$issue_prio = $db->getIssuePriority($matches[2],$_issue->number);
+		$this->priority=$issue_prio->priority;
+		
+		
+		//$this->features = getFeaturesFromText($_issue->body);
+		/*
+		$this->features = $db->getIssueFeatures($matches[2],$_issue->number);
+		foreach($this->features as $feature){
+			if($this->feature_priority > $feature->priority){
+				$this->feature_priority = $feature->priority;
+			}
+		}
+		$this->milestone_id=isset($_issue->milestone)?$_issue->milestone->number:0;
+		$msversion=array();
+		if(preg_match("/.*([0-9]\.[0-9]|Bug)$/",isset($_issue->milestone)?$_issue->milestone->title:"",$msversion)==1){
+			$this->milestone_version=$msversion[1];
+		}
+		*/
+		//$this->color=isset($VERSION_COLORS[$this->milestone_version])?$VERSION_COLORS[$this->milestone_version]:"000000";
+		
+		/*
+		switch($this->milestone_version){
+			case "1.0":
+				$this->color=$VERSION_COLORS["1.0"];
+				break;
+			case "2.0":
+				$this->color=$VERSION_COLORS["2.0"];
+				break;
+			default:
+				$this->color="000000";
+			break;
+		}
+		*/
 		// Default to 1 day
 		if(empty($this->time)){
 			$this->time=0;

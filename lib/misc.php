@@ -68,7 +68,7 @@ function cmp_issue_priority( $a, $b )
 function cmp_tag_priority( $a, $b )
 { 
   if($a->tag_priority == $b->tag_priority){
-	return $b->priority - $a->priority;
+	return $a->priority - $b->priority;
   }else{
 	return $b->tag_priority - $a->tag_priority;
   }
