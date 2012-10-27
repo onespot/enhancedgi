@@ -80,29 +80,36 @@
 		}
 		
 		function reDraw(reset,div_id){
-			//showLoading();
-			console.log(new Date().getTime()+" Redraw");
-			if(reset){
-				g.Reset();
-			}
-			<?php if(isset($_GET['mode']) && $_GET['mode']=="milestone") {?>
-			console.log(new Date().getTime()+" Parsing xml");
-			JSGantt.parseXML("gant_xml.php<?php echo $getvals ?>",g);
-			<?php }else{?>
-			console.log(new Date().getTime()+" Parsing xml");
-			JSGantt.parseXML("gant_xml_by_user.php<?php echo $getvals ?>last_review=<?php echo isset($_GET['last_review'])?$_GET['last_review']:""; ?>&showmine=<?php echo isset($_GET['showmine'])?$_GET['showmine']:""; ?>&use_cached="+reset,g);
-			<?php } ?>
-			console.log(new Date().getTime()+" Drawing");
-			g.Draw();	
-			g.DrawDependencies();
-			console.log(new Date().getTime()+" Setting menus");
-			attachMenus();
-			console.log(new Date().getTime()+" Redrawn");
 			if(typeof div_id != 'undefined'){
 				console.log("Highlighting "+div_id);
-				$('#'+div_id).effect("highlight",{color:'#ffff00'},5000);
+				$('#'+div_id).effect("highlight",{color:'#ff0000'},5000);
 			}
-			//hideLoading();
+			setTimeout(function(){
+				//showLoading();
+				console.log(new Date().getTime()+" Redraw");
+				if(reset){
+					g.Reset();
+				}
+				<?php if(isset($_GET['mode']) && $_GET['mode']=="milestone") {?>
+				console.log(new Date().getTime()+" Parsing xml");
+				JSGantt.parseXML("gant_xml.php<?php echo $getvals ?>",g);
+				<?php }else{?>
+				console.log(new Date().getTime()+" Parsing xml");
+				JSGantt.parseXML("gant_xml_by_user.php<?php echo $getvals ?>last_review=<?php echo isset($_GET['last_review'])?$_GET['last_review']:""; ?>&showmine=<?php echo isset($_GET['showmine'])?$_GET['showmine']:""; ?>&use_cached="+reset,g);
+				<?php } ?>
+				console.log(new Date().getTime()+" Drawing");
+				g.Draw();	
+				g.DrawDependencies();
+				console.log(new Date().getTime()+" Setting menus");
+				attachMenus();
+				console.log(new Date().getTime()+" Redrawn");
+				if(typeof div_id != 'undefined'){
+					console.log("Highlighting "+div_id);
+					$('#'+div_id).effect("highlight",{color:'#00ff00'},5000);
+				}
+				//hideLoading();
+			}
+			,10);
 		}
 		
 		function updateTicketPriority(action, repo, ticket_id, div_id){	
