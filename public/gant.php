@@ -262,32 +262,38 @@
 
 <div id="selector">
 <form method="get">
+<input type="hidden" name="repos[]" value="<?php echo $_REPO; ?>"/>
 <?php if(isset($_GET['mode'])){ ?>
 		<!--
 		<input type="hidden" name="mode" value="<?php echo $_GET['mode']; ?>">
 		-->
 <?php } ?>
+
+
 <!--
+// Old table for multiple repo support
 <table>
 	<tr>
 <?php 
-	//$row=1;
-	//foreach($c->repos as $repo){
+	/*
+	$row=1;
+	foreach($c->repos as $repo){
+	*/
 ?>
 	<td><input type="checkbox" name="repos[]" value="<?php echo $repo['name']; ?>" <?php if((!isset($_GET['repos']))||in_array($repo['name'],$_GET['repos'])){echo "checked";} ?> /> <?php echo $repo['name']; ?></td>
  <?php
-/* 
+ /*
 		if($row%6==0){
 			echo "</tr>";
 			echo "<tr>";
 		}
 		$row++;
 	}
-*/	
+	*/
  ?>
 	</tr>
  </table>
- -->
+-->
  <input type="radio" name="mode" value="user" <?php echo ((!isset($_GET['mode'])) || ($_GET['mode']=="user"))?"checked":"" ?> /> Developer<br />
  <input type="radio" name="mode" value="milestone" <?php echo ($_GET['mode']=="milestone")?"checked":"" ?> /> Milestone<br />
  <input type="checkbox" name="batchmode" value="true" <?php echo (isset($_GET['batchmode']) && $_GET['batchmode']=="true")?"checked":"" ?> />Batch Mode<br />
