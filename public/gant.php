@@ -307,7 +307,7 @@
  <input type="radio" name="mode" value="milestone" <?php echo ($_GET['mode']=="milestone")?"checked":"" ?> /> Milestone  
  <input type="checkbox" name="batchmode" value="true" <?php echo (isset($_GET['batchmode']) && $_GET['batchmode']=="true")?"checked":"" ?> />Batch Mode 
  <input type="checkbox" name="showmine" value="true" <?php echo (isset($_GET['showmine']) && $_GET['showmine']=="true")?"checked":"" ?> />Show Mine 
- <input type="submit" value="submit" />
+ <input type="submit" value="Reload" />
  <a target="_blank" href="update_milestones.php?repo=amplify-back-end">Update Milestones</a><br />
 </form>
 </div>
