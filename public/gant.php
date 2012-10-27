@@ -301,20 +301,21 @@
 	</tr>
  </table>
 -->
- <input type="radio" name="mode" value="user" <?php echo ((!isset($_GET['mode'])) || ($_GET['mode']=="user"))?"checked":"" ?> /> Developer<br />
- <input type="radio" name="mode" value="milestone" <?php echo ($_GET['mode']=="milestone")?"checked":"" ?> /> Milestone<br />
- <input type="checkbox" name="batchmode" value="true" <?php echo (isset($_GET['batchmode']) && $_GET['batchmode']=="true")?"checked":"" ?> />Batch Mode<br />
- <input type="checkbox" name="showmine" value="true" <?php echo (isset($_GET['showmine']) && $_GET['showmine']=="true")?"checked":"" ?> />Show Mine<br />
- Last Reviewed<br />
- <input type="text" name="last_review" id="datepicker" value="<?php echo $_GET['last_review']; ?>"><br />
+ Last Reviewed: 
+ <input type="text" name="last_review" id="datepicker" value="<?php echo $_GET['last_review']; ?>">
+ <input type="radio" name="mode" value="user" <?php echo ((!isset($_GET['mode'])) || ($_GET['mode']=="user"))?"checked":"" ?> /> Developer 
+ <input type="radio" name="mode" value="milestone" <?php echo ($_GET['mode']=="milestone")?"checked":"" ?> /> Milestone  
+ <input type="checkbox" name="batchmode" value="true" <?php echo (isset($_GET['batchmode']) && $_GET['batchmode']=="true")?"checked":"" ?> />Batch Mode 
+ <input type="checkbox" name="showmine" value="true" <?php echo (isset($_GET['showmine']) && $_GET['showmine']=="true")?"checked":"" ?> />Show Mine 
  <input type="submit" value="submit" />
+ <a target="_blank" href="update_milestones.php?repo=amplify-back-end">Update Milestones</a><br />
 </form>
-<a target="_blank" href="update_milestones.php?repo=amplify-back-end">Update Milestones</a>
 </div>
-
-<?php foreach($VERSION_COLORS as $key=>$val){?>
-	<span style="color: #<?php echo $val; ?>;"><?php echo $key; ?></span>
-<?php } ?>
+<!--
+<?php //foreach($VERSION_COLORS as $key=>$val){?>
+	<span style="color: #<?php // echo $val; ?>;"><?php // echo $key; ?></span>
+<?php //} ?>
+-->
 <div style="position:relative" class="gantt" id="GanttChartDIV"></div>
 
 <script language="javascript">
