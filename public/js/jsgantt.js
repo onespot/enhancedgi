@@ -1563,14 +1563,9 @@ this.Reset = function(value)
                            vRightTable += '<div style="FONT-SIZE:12px; position:absolute; top:-3px; width:120px; left:' + (Math.ceil((vTaskRight) * (vDayWidth) - 1) + 6) + 'px">' + vCaptionStr + '</div>';
 	                  }
                   vRightTable += '</div>' ;
-
-                  
-
                }
             }
-
             vRightTable += '</DIV>';
-
          }
 		console.log(new Date().getTime()+" CP 10");
          vMainTable += vRightTable + '</DIV></TD></TR></TBODY></TABLE></BODY></HTML>';

@@ -1,10 +1,6 @@
 <?php
-require ('../control/xml.php'); 
-$then=microtime(true);
+require ('../control/xml.php');
 $c = new XmlController();
-$now=microtime(true);
-//echo "time taken = ".($now-$then)."\n";
-$then=microtime(true);
 ?>
 <project>
 <?php 
@@ -60,8 +56,6 @@ $then=microtime(true);
 		</task>
 <?php 
 		}
-	} 
-$now=microtime(true);
-//echo "time taken = ".($now-$then)."\n";
+	}
 ?>
 </project>

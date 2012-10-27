@@ -44,12 +44,13 @@
 			}
 		}
 		
-		function maybeReload(){
+		function maybeReload(div_id){
 			<?php if(isset($_GET['batchmode']) && $_GET['batchmode']=="true"){ ?>
-				  reDraw(true);
+				  reDraw(true,div_id);
 				  return;
+			<?php }else{ ?>
+				window.location.reload();
 			<?php } ?>
-			window.location.reload();
 		}
 		
 		function showLoading(){
@@ -70,7 +71,7 @@
 							menu: "<?php echo $issue->idForMenu; ?>-menu"
 						},
 						function(action, el, pos) {
-							updateTicketPriority(action, '<?php echo $issue->repo ?>', <?php echo $issue->number; ?>);
+							updateTicketPriority(action, '<?php echo $issue->repo ?>', <?php echo $issue->number; ?>, '<?php echo $issue->idForMenu; ?>');
 						})
 					}
 				,10);
@@ -78,7 +79,7 @@
 			console.log(new Date().getTime()+" Menus Attached");
 		}
 		
-		function reDraw(reset){
+		function reDraw(reset,div_id){
 			//showLoading();
 			console.log(new Date().getTime()+" Redraw");
 			if(reset){
@@ -89,7 +90,7 @@
 			JSGantt.parseXML("gant_xml.php<?php echo $getvals ?>",g);
 			<?php }else{?>
 			console.log(new Date().getTime()+" Parsing xml");
-			JSGantt.parseXML("gant_xml_by_user.php<?php echo $getvals ?>last_review=<?php echo isset($_GET['last_review'])?$_GET['last_review']:""; ?>&showmine=<?php echo isset($_GET['showmine'])?$_GET['showmine']:""; ?>",g);
+			JSGantt.parseXML("gant_xml_by_user.php<?php echo $getvals ?>last_review=<?php echo isset($_GET['last_review'])?$_GET['last_review']:""; ?>&showmine=<?php echo isset($_GET['showmine'])?$_GET['showmine']:""; ?>&use_cached="+reset,g);
 			<?php } ?>
 			console.log(new Date().getTime()+" Drawing");
 			g.Draw();	
@@ -97,94 +98,98 @@
 			console.log(new Date().getTime()+" Setting menus");
 			attachMenus();
 			console.log(new Date().getTime()+" Redrawn");
+			if(typeof div_id != 'undefined'){
+				console.log("Highlighting "+div_id);
+				$('#'+div_id).effect("highlight",{color:'#ffff00'},5000);
+			}
 			//hideLoading();
 		}
 		
-		function updateTicketPriority(action, repo, ticket_id){	
+		function updateTicketPriority(action, repo, ticket_id, div_id){	
 			var actions = action.split(':-:');
 			if(actions[1]=="increase"){
 				$.get('update_ticket_priority.php?repo='+repo+'&ticket='+ticket_id+'&action=increase', function(data) {
 				  $('.result').html(data);
 					console.log(data);
-					maybeReload();
+					maybeReload(div_id);
 				});
 			}else if(actions[1]=="decrease"){
 				$.get('update_ticket_priority.php?repo='+repo+'&ticket='+ticket_id+'&action=decrease', function(data) {
 				  console.log(data);
 				  $('.result').html(data);
-				  maybeReload();
+				  maybeReload(div_id);
 				});
 			}else if(actions[1]=="boost"){
 				$.get('update_ticket_priority.php?repo='+repo+'&ticket='+ticket_id+'&action=boost', function(data) {
 				  console.log(data);
 				  $('.result').html(data);
-				  maybeReload();
+				  maybeReload(div_id);
 				});
 			}else if(actions[1]=="bury"){
 				$.get('update_ticket_priority.php?repo='+repo+'&ticket='+ticket_id+'&action=bury', function(data) {
 				  console.log(data);
 				  $('.result').html(data);
-				  maybeReload();
+				  maybeReload(div_id);
 				});
 			}else if(actions[1]=="Low"){
 				$.get('update_issue_priority_tag.php?repo='+repo+'&ticket='+ticket_id+'&priority=Low', function(data) {
 				  console.log(data);
 				  $('.result').html(data);
-				  maybeReload();
+				  maybeReload(div_id);
 				});
 			}else if(actions[1]=="Medium"){
 				$.get('update_issue_priority_tag.php?repo='+repo+'&ticket='+ticket_id+'&priority=Medium', function(data) {
 				  console.log(data);
 				  $('.result').html(data);
-				  maybeReload();
+				  maybeReload(div_id);
 				});
 			}else if(actions[1]=="High"){
 				$.get('update_issue_priority_tag.php?repo='+repo+'&ticket='+ticket_id+'&priority=High', function(data) {
 				  console.log(data);
 				  $('.result').html(data);
-				  maybeReload();
+				  maybeReload(div_id);
 				});
 			}else if(actions[1]=="Urgent"){
 				$.get('update_issue_priority_tag.php?repo='+repo+'&ticket='+ticket_id+'&priority=Urgent', function(data) {
 			      console.log(data);
 				  $('.result').html(data);
-				  maybeReload();
+				  maybeReload(div_id);
 				});
 			}else if(actions[1]=="2h"){
 				$.get('update_issue_time_tag.php?repo='+repo+'&ticket='+ticket_id+'&time='+escape('2 hours'), function(data) {
 				  console.log(data);
 				  $('.result').html(data);
-				  maybeReload();
+				  maybeReload(div_id);
 				});
 			}else if(actions[1]=="4h"){
 				$.get('update_issue_time_tag.php?repo='+repo+'&ticket='+ticket_id+'&time='+escape('4 hours'), function(data) {
 				  console.log(data);
 				  $('.result').html(data);
-				  maybeReload();
+				  maybeReload(div_id);
 				});
 			}else if(actions[1]=="1d"){
 				$.get('update_issue_time_tag.php?repo='+repo+'&ticket='+ticket_id+'&time='+escape('1 day'), function(data) {
 				console.log(data);
 				  $('.result').html(data);
-				  maybeReload();
+				  maybeReload(div_id);
 				});
 			}else if(actions[1]=="2d"){
 				$.get('update_issue_time_tag.php?repo='+repo+'&ticket='+ticket_id+'&time='+escape('2 days'), function(data) {
 				  console.log(data);
 				  $('.result').html(data);
-				  maybeReload();
+				  maybeReload(div_id);
 				});
 			}else if(actions[1]=="3d"){
 				$.get('update_issue_time_tag.php?repo='+repo+'&ticket='+ticket_id+'&time='+escape('3 days'), function(data) {
 				  console.log(data);
 				  $('.result').html(data);
-				  maybeReload();
+				  maybeReload(div_id);
 				});
 			}else if(actions[1]=="1w"){
 				$.get('update_issue_time_tag.php?repo='+repo+'&ticket='+ticket_id+'&time='+escape('1 week'), function(data) {
 				  console.log(data);
 				  $('.result').html(data);
-				  maybeReload();
+				  maybeReload(div_id);
 				});
 			}else if(actions[1]=="redraw"){
 				reDraw(true);
@@ -262,24 +267,27 @@
 		<input type="hidden" name="mode" value="<?php echo $_GET['mode']; ?>">
 		-->
 <?php } ?>
+<!--
 <table>
 	<tr>
 <?php 
-	$row=1;
-	foreach($c->repos as $repo){
+	//$row=1;
+	//foreach($c->repos as $repo){
 ?>
 	<td><input type="checkbox" name="repos[]" value="<?php echo $repo['name']; ?>" <?php if((!isset($_GET['repos']))||in_array($repo['name'],$_GET['repos'])){echo "checked";} ?> /> <?php echo $repo['name']; ?></td>
- <?php 
+ <?php
+/* 
 		if($row%6==0){
 			echo "</tr>";
 			echo "<tr>";
 		}
 		$row++;
 	}
-	
+*/	
  ?>
 	</tr>
  </table>
+ -->
  <input type="radio" name="mode" value="user" <?php echo ((!isset($_GET['mode'])) || ($_GET['mode']=="user"))?"checked":"" ?> /> Developer<br />
  <input type="radio" name="mode" value="milestone" <?php echo ($_GET['mode']=="milestone")?"checked":"" ?> /> Milestone<br />
  <input type="checkbox" name="batchmode" value="true" <?php echo (isset($_GET['batchmode']) && $_GET['batchmode']=="true")?"checked":"" ?> />Batch Mode<br />
