@@ -16,30 +16,33 @@ class PageController{
 	public $githubv3;
 	public $repos;
 	
-    function PageController(){
+    function PageController($username="", $password=""){
 		global $_REPO,$_ACCOUNT;
 		Github_Autoloader::register();
 		$this->github = new Github_Client();
 		$this->githubv3 = new Github\Client();
-        $this->authenticate();
+        $this->authenticate($username,$password);
 		//$this->repos = $this->github->getRepoApi()->getOrgRepos($_ACCOUNT);
 		$this->db=new Database();
     }
 	
-	function authenticate(){
-		if (!isset($_SERVER['PHP_AUTH_USER'])) {
+	function authenticate($user="", $pass=""){
+		if (!isset($_SERVER['PHP_AUTH_USER']) && empty($user)) {
 			header('WWW-Authenticate: Basic realm="Onespot Enhanced GI"');
 			header('HTTP/1.0 401 Unauthorized');
 			echo 'Please login using you Gitub username and password';
 			exit;
 		} else {
-			$this->github->authenticate($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'], Github_Client::AUTH_HTTP_PASSWORD);
-			$this->githubv3->authenticate($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'], Github\Client::AUTH_HTTP_PASSWORD);
-			if(isset($_COOKIE["os-enhancedgi_auth"]) && $_COOKIE["os-enhancedgi_auth"] != md5($_SERVER['PHP_AUTH_USER'].$_SERVER['PHP_AUTH_PW'])){
+			$username=empty($user)?$_SERVER['PHP_AUTH_USER']:$user;
+			$password = empty($pass)?$_SERVER['PHP_AUTH_PW']:$pass;
+			
+			$this->github->authenticate($username, $password, Github_Client::AUTH_HTTP_PASSWORD);
+			$this->githubv3->authenticate($username, $password, Github\Client::AUTH_HTTP_PASSWORD);
+			if(isset($_COOKIE["os-enhancedgi_auth"]) && $_COOKIE["os-enhancedgi_auth"] != md5($username.$password)){
 				// hit the api to validate
 				try{
-				$res=$this->github->getUserApi()->show($_SERVER['PHP_AUTH_USER']);
-				setcookie("os-enhancedgi_auth",md5($_SERVER['PHP_AUTH_USER'].$_SERVER['PHP_AUTH_PW']),time()+3600000);
+				$res=$this->github->getUserApi()->show($username);
+				setcookie("os-enhancedgi_auth",md5($username.$password),time()+3600000);
 				}catch(Exception $e){
 					if($e->getMessage()==="HTTP 401: Unauthorized"){
 						header('WWW-Authenticate: Basic realm="Onespot Enhanced GI"');

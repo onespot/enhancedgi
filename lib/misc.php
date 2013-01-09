@@ -80,7 +80,7 @@ function cmp_finish_date( $a, $b )
 	return strcmp($a->_issue->title,$b->_issue->title) ; 
   }
   return ($a->estimated_end_time < $b->estimated_end_time) ? -1 : 1;
-} 
+}
 
 function strToHexColor($string)
 {

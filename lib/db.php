@@ -12,7 +12,9 @@ class Database{
 		
 		
 	public function __construct($dbname = 'enhancedgi',$dbuser="enhancedgi",$dbpass="poiulkjh19792012stak"){
-		if($_SERVER['SERVER_NAME']=="penrose"){
+		global $DEBUG_MODE;
+		if($DEBUG_MODE || (isset($_SERVER['SERVER_NAME']) && $_SERVER['SERVER_NAME']=="penrose")){
+			echo "DEBUG DB MODE";
 			$this->dbh = mysql_connect('localhost', $dbuser, "poiulkjh") 
             or die("Unable to connect to MySQL");
 		}else{
@@ -65,6 +67,15 @@ class Database{
 	   $result = mysql_query($insert);
         if(!$result) {
             die("Error updating issue priority : " . mysql_error());
+        }
+	}
+	
+	function updateMilestoneProgress($milestone,$start_date,$finish_date,$issue_count){
+		$today=date("Y-m-d");
+	   $insert="INSERT INTO milestone_progress VALUES('$today','$milestone','$start_date','$finish_date',$issue_count) ON DUPLICATE KEY UPDATE start_date='$start_date',finish_date='$finish_date',issue_count='$issue_count'";
+	   $result = mysql_query($insert);
+        if(!$result) {
+            die("Error updating milestone progress : " . mysql_error());
         }
 	}
 	
