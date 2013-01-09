@@ -82,7 +82,7 @@
 		function reDraw(reset,div_id){
 			if(typeof div_id != 'undefined'){
 				console.log("Highlighting "+div_id);
-				$('#'+div_id).effect("highlight",{color:'#ff0000'},5000);
+				$('#'+div_id).effect("highlight",{color:'#ff0000'},2000);
 			}
 			setTimeout(function(){
 				//showLoading();
@@ -120,8 +120,20 @@
 					console.log(data);
 					maybeReload(div_id);
 				});
+			}else if(actions[1]=="increase5"){
+				$.get('update_ticket_priority.php?repo='+repo+'&ticket='+ticket_id+'&action=increase5', function(data) {
+				  $('.result').html(data);
+					console.log(data);
+					maybeReload(div_id);
+				});
 			}else if(actions[1]=="decrease"){
 				$.get('update_ticket_priority.php?repo='+repo+'&ticket='+ticket_id+'&action=decrease', function(data) {
+				  console.log(data);
+				  $('.result').html(data);
+				  maybeReload(div_id);
+				});
+			}else if(actions[1]=="decrease5"){
+				$.get('update_ticket_priority.php?repo='+repo+'&ticket='+ticket_id+'&action=decrease5', function(data) {
 				  console.log(data);
 				  $('.result').html(data);
 				  maybeReload(div_id);
@@ -224,8 +236,16 @@
 			Move Up
 		</li>
 		<li class="separator">
+			<a title="Increase Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:increase5"><img src="images/add.png" width="20px"/></a>
+			Move Up 5
+		</li>
+		<li class="separator">
 			<a title="Decrease Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:decrease"><img src="images/remove.png" width="20px"/></a>
 			Move Down
+		</li>
+		<li class="separator">
+			<a title="Decrease Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:decrease5"><img src="images/remove.png" width="20px"/></a>
+			Move Down 5
 		</li>
 		<li class="separator">
 			<a title="Bury Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:bury"><img src="images/remove.png" width="20px"/></a>
