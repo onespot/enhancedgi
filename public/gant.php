@@ -45,10 +45,10 @@
 		}
 		
 		function maybeReload(div_id){
-			<?php if(isset($_GET['batchmode']) && $_GET['batchmode']=="true"){ ?>
+			<?php if(isset($_GET['batchmode']) && $_GET['batchmode']=="true" && empty($_GET['noupdate'])){ ?>
 				  reDraw(true,div_id);
 				  return;
-			<?php }else{ ?>
+			<?php }else if(empty($_GET['noupdate'])){ ?>
 				window.location.reload();
 			<?php } ?>
 		}
