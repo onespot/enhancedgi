@@ -4,18 +4,21 @@ require ('../lib/db.php');
 
 $db=new Database();
 
-$db->createIssuePriority("test",1,"tester");
-$db->createIssuePriority("test",2,"tester");
-$db->createIssuePriority("test",3,"tester");
-$db->createIssuePriority("test",4,"tester");
 
-$db->updateIssuePriority("test",4,10);
+$db->createIssuePriority("test",1,"tester",1,1);
+$db->createIssuePriority("test",2,"tester",1,1);
+$db->createIssuePriority("test",3,"tester",1,1);
+$db->createIssuePriority("test",4,"tester",1);
 
-$db->swapPrioritys("test",1,"test",2);
+//$db->updateIssuePriority("test",4,10);
 
-$db->upPriority("test",4);
+//$db->swapPrioritys("test",1,"test",2);
+
+//$db->upPriority("test",4);
 
 $db->downPriority("test",2);
 $db->downPriority("test",2);
 $db->downPriority("test",2);
 $db->downPriority("test",2);
+
+$db->upPriorityMs("test",2);

@@ -76,8 +76,12 @@ class Database{
         }
 	}
 	
-	function updateIssuePriority($repo,$issue_id,$priority,$owner="nobody",$tag_priority=0){
-	   $insert="INSERT INTO issue_priority VALUES('$repo',$issue_id,$priority,'$owner',$tag_priority) ON DUPLICATE KEY UPDATE priority=$priority";
+	function updateIssuePriority($repo,$issue_id,$priority,$owner="nobody",$tag_priority=0,$milestone_id=null){
+		if(isset($milestone_id)){
+			$insert="INSERT INTO issue_priority(issue_repo,issue_id,priority,owner,tag_priority,milestone_id) VALUES('$repo',$issue_id,$priority,'$owner',$tag_priority,$milestone_id) ON DUPLICATE KEY UPDATE priority=$priority";
+		}else{
+			$insert="INSERT INTO issue_priority(issue_repo,issue_id,priority,owner,tag_priority) VALUES('$repo',$issue_id,$priority,'$owner',$tag_priority) ON DUPLICATE KEY UPDATE priority=$priority";
+		}
 	   $result = mysql_query($insert);
         if(!$result) {
             die("Error updating issue priority : " . mysql_error());
@@ -143,7 +147,7 @@ class Database{
         return $results;
     }
 	
-	function createIssuePriority($repo,$issue_id,$owner,$tag_prio){
+	function createIssuePriority($repo,$issue_id,$owner,$tag_prio,$milestone_id = null){
         $query = "SELECT max(priority) as max_priority
 				  FROM issue_priority
 				  WHERE owner='$owner' and tag_priority=$tag_prio";
@@ -156,7 +160,11 @@ class Database{
 		if(isset($row->max_priority)){
 			$new_priority = $row->max_priority + 1;
 		}
-		$insert="insert into issue_priority values('$repo','$issue_id',$new_priority,'$owner','$tag_prio')";
+		if(isset($milestone_id)){
+			$insert="insert into issue_priority(issue_repo,issue_id,priority,owner,tag_priority,milestone_id) values('$repo','$issue_id',$new_priority,'$owner','$tag_prio','".$milestone_id."')";
+		}else{
+			$insert="insert into issue_priority(issue_repo,issue_id,priority,owner,tag_priority) values('$repo','$issue_id',$new_priority,'$owner','$tag_prio')";
+		}
 		$result = mysql_query($insert);
         if(!$result) {
              die("Error inserting issue priority : " . mysql_error());
@@ -186,6 +194,32 @@ class Database{
 				$this->swapPrioritys($repo,$issue_id,$row->issue_repo,$row->issue_id);
 			}else{
 				die("Issue with priority ".($prio->priority-1)." doesnt exist for user ".$prio->owner);
+			}
+		}else{
+			return false;
+		}
+		return true;
+	}
+	
+	function upPriorityMs($repo,$issue_id){
+		$prio=$this->getIssuePriority($repo,$issue_id);
+		if($prio->priority>0){
+			$query = "SELECT *
+				  FROM issue_priority
+				  WHERE issue_priority.owner='$prio->owner' and tag_priority=".$prio->tag_priority." and issue_priority.priority<".$prio->priority." and issue_priority.milestone_id=$prio->milestone_id order by priority desc limit 1";
+			$result = mysql_query($query);
+			if(!$result) {
+				 die("Error getting next priority from db : " . mysql_error());
+			}
+			$row = mysql_fetch_object($result);
+			if(isset($row)){
+				// get the priority of the next one and upPriority until we reach there.
+				for($i=0;$i<($prio->priority - $row->priority - 1);$i++){
+					$this->upPriority($repo,$issue_id);
+				}
+			}else{
+				//die("Issue with priority ".($prio->priority-1)." doesnt exist for user ".$prio->owner);
+				return false;
 			}
 		}else{
 			return false;

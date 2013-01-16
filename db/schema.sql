@@ -29,6 +29,9 @@ CREATE TABLE `enhancedgi`.`dev_availability`(
   `effective_date` DATETIME
 );
 
+ALTER TABLE `enhancedgi`.`issue_priority`   
+  ADD COLUMN `milestone_id` INT(11) NULL AFTER `tag_priority`;
+  
 GRANT ALL ON * TO enhancedgi@'localhost' IDENTIFIED BY 'poiulkjh';
 
 INSERT INTO features(title,description,priority) VALUES('unassigned','',10000000);

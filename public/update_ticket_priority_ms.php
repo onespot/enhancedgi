@@ -1,0 +1,1 @@
+<?phprequire ('../control/page.php'); $c = new PageController();$repo=$_GET['repo'];$issue_id=$_GET['ticket'];$action=$_GET['action'];$priority=isset($_GET['priority'])?$_GET['priority']:0;if($action=="increasems"){	$c->db->upPriorityMs($repo,$issue_id);	echo "increase $repo $issue_id";}?>

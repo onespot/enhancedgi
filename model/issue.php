@@ -91,14 +91,14 @@ class Issue{
 		
 		$this->color=isset($PRIORITY_COLORS[$this->tag_priority])?$PRIORITY_COLORS[$this->tag_priority]:"000000";
 
-		
+		$this->milestone_id=isset($_issue->milestone)?$_issue->milestone->number:null;
 		$issue_prio = $db->getIssuePriority($matches[2],$_issue->number);
 		$assignee = isset($this->_issue->assignee)?$this->_issue->assignee->login:"nobody";
-		if(!empty($issue_prio) && ($issue_prio->owner != $assignee || $issue_prio->tag_priority != $this->tag_priority)){
+		if(!empty($issue_prio) && ($issue_prio->owner != $assignee || $issue_prio->tag_priority != $this->tag_priority || $issue_prio->milestone_id != $this->milestone_id)){
 			$db->deleteIssuePriority($matches[2],$this->_issue->number);
-			$db->createIssuePriority($matches[2],$this->_issue->number,$assignee,$this->tag_priority);
+			$db->createIssuePriority($matches[2],$this->_issue->number,$assignee,$this->tag_priority,$this->milestone_id);
 		}else if(empty($issue_prio)){
-			$db->createIssuePriority($matches[2],$this->_issue->number,$assignee,$this->tag_priority);
+			$db->createIssuePriority($matches[2],$this->_issue->number,$assignee,$this->tag_priority,$this->milestone_id);
 		}
 		$issue_prio = $db->getIssuePriority($matches[2],$_issue->number);
 		$this->priority=$issue_prio->priority;

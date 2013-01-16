@@ -120,6 +120,12 @@
 					console.log(data);
 					maybeReload(div_id);
 				});
+			}else if(actions[1]=="increasems"){
+				$.get('update_ticket_priority_ms.php?repo='+repo+'&ticket='+ticket_id+'&action=increasems', function(data) {
+				  $('.result').html(data);
+					console.log(data);
+					maybeReload(div_id);
+				});
 			}else if(actions[1]=="increase5"){
 				$.get('update_ticket_priority.php?repo='+repo+'&ticket='+ticket_id+'&action=increase5', function(data) {
 				  $('.result').html(data);
@@ -231,6 +237,12 @@
 			<a title="Boost Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:boost"><img src="images/add.png" width="20px"/></a>
 			Boost
 		</li>
+		<?php if($_GET['mode']=="milestone"){ ?>
+		<li class="separator">
+			<a title="Bump Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:increasems"><img src="images/add.png" width="20px"/></a>
+			Bump Up
+		</li>
+		<?php } ?>
 		<li class="separator">
 			<a title="Increase Priority" style="display: inline; padding: 0; margin: 0;" href="#priority:-:increase"><img src="images/add.png" width="20px"/></a>
 			Move Up
