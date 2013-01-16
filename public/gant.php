@@ -20,7 +20,7 @@
 	<script language="javascript" src="js/jquery.contextMenu.js"></script>
 	<script language="javascript" src="js/block.ui.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
-	<script language="javascript" src="js/jsgantt.js"></script>
+	<script language="javascript" src="js/jsgantt.js?cb=213223"></script>
 	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/base/jquery-ui.css" type="text/css" media="all" />
 	<script>
 	$(function() {
