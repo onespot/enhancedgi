@@ -7,7 +7,7 @@ $db=new Database();
 
 $db->createIssuePriority("test",1,"tester",1,1);
 $db->createIssuePriority("test",2,"tester",1,1);
-$db->createIssuePriority("test",3,"tester",1,1);
+$db->createIssuePriority("test",3,"tester",1);
 $db->createIssuePriority("test",4,"tester",1);
 
 //$db->updateIssuePriority("test",4,10);

@@ -201,6 +201,21 @@ class Database{
 		return true;
 	}
 	
+	function getCountBetweenPriorities($prio1,$prio2){
+		$query = "SELECT COUNT(*) as diff FROM issue_priority where owner='$prio1->owner' AND tag_priority=$prio1->tag_priority AND priority > $prio1->priority AND priority < $prio2->priority";
+		$result = mysql_query($query);
+		if(!$result) {
+			 die("Error getting next priority from db : " . mysql_error());
+		}
+		$row = mysql_fetch_object($result);
+		if(isset($row)){
+			return $row->diff;
+		}else{
+			//die("Issue with priority ".($prio->priority-1)." doesnt exist for user ".$prio->owner);
+			return 0;
+		}
+	}
+	
 	function upPriorityMs($repo,$issue_id){
 		$prio=$this->getIssuePriority($repo,$issue_id);
 		if($prio->priority>0){
@@ -214,7 +229,8 @@ class Database{
 			$row = mysql_fetch_object($result);
 			if(isset($row)){
 				// get the priority of the next one and upPriority until we reach there.
-				for($i=0;$i<($prio->priority - $row->priority -1);$i++){
+				echo "Prios = ".$this->getCountBetweenPriorities($row,$prio);
+				for($i=0;$i<$this->getCountBetweenPriorities($row,$prio);$i++){
 					$this->upPriority($repo,$issue_id);
 				}
 			}else{
