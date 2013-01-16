@@ -119,14 +119,19 @@ function clearCache(){
 }
 
 /**
-* Updates the start and end dates for a list of issues based on each of their durations
+* Updates the start and end dates for a list of issues based on each of their durations and the developer availability
 **/
-function updateIssueTimes($issues){
+function updateIssueTimes($issues, $db){
 	$runningcount=0;
 	$time=strtotime(date("Y-m-d"));
 	foreach($issues as $issue){
 		$issue->estimated_start_time=$time+$runningcount;
-		$runningcount+=$issue->time==0?86400:$issue->time;
+		$assignee = isset($issue->_issue->assignee)?$issue->_issue->assignee->login:"nobody";
+		// update the time based on the dev availability
+		$dev_availability = $assignee != "nobody" ? $db->getDevAvailability($assignee,$issue->estimated_start_time):5;
+		//echo "Dev $assignee available ".$dev_availability." days per week ".(5/$dev_availability)."\n";
+		$issue_time = $issue->time * 5/$dev_availability;
+		$runningcount+=$issue_time==0?86400:$issue_time;
 		$issue->estimated_end_time=$time+$runningcount-1;
 		$weekend_days=weekendDays($issue->estimated_start_time,$issue->estimated_end_time);
 		$issue->estimated_end_time+=($weekend_days*86400);

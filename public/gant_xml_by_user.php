@@ -45,7 +45,7 @@ $c = new XmlController();
 			<pBorderColor><?php echo $issue->color; ?></pBorderColor>
 			<pLink><?php echo $issue->_issue->html_url; ?></pLink>
 			<pMile>0</pMile>
-			<pRes><?php echo xmlEscape($issue->_issue->assignee->login) ?> [<?php echo ceil(($issue->time)/86400) ?> d] [p: <?php echo $issue->priority; ?>]</pRes>
+			<pRes><?php echo xmlEscape($issue->_issue->assignee->login) ?> [<?php echo ceil(($issue->time)/86400) ?> d] [p: <?php echo $issue->priority; ?>]<?php echo isset($issue->_issue->milestone)?" - ".$issue->_issue->milestone->title:""; ?></pRes>
 			<pComp>0</pComp>
 			<pGroup>0</pGroup>
 			<pParent><?php echo $parent_id; ?></pParent>

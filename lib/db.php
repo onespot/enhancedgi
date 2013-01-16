@@ -40,7 +40,21 @@ class Database{
         return $row;
     }
 	
-   function getFeatures(){
+	function getDevAvailability($devname,$date){
+        $query = "SELECT * FROM dev_availability WHERE developer_name='$devname' AND (effective_date < '".date("Y-m-d",$date)."' OR effective_date IS NULL) ORDER BY effective_date DESC LIMIT 1";
+        $result = mysql_query($query);
+        if(!$result) {
+            die("Error getting feature from db : " . mysql_error());
+        }
+        $row = mysql_fetch_object($result);
+		if(isset($row)){
+			return isset($row->available_days_per_week)?$row->available_days_per_week:5;
+		}else{
+			return 5;
+		}
+    }
+	
+    function getFeatures(){
 		// ignore the unassigned default feature
         $query = "SELECT * FROM features where id>1";
         $result = mysql_query($query);

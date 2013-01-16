@@ -22,6 +22,13 @@ CREATE TABLE issue_priority(
 	UNIQUE INDEX repo_ticket_index (issue_repo,issue_id)
 ) ENGINE=INNODB;
 
+DROP TABLE IF EXISTS dev_availability;
+CREATE TABLE `enhancedgi`.`dev_availability`(
+  `developer_name` VARCHAR(64) NOT NULL,
+  `available_days_per_week` INT NOT NULL,
+  `effective_date` DATETIME
+);
+
 GRANT ALL ON * TO enhancedgi@'localhost' IDENTIFIED BY 'poiulkjh';
 
 INSERT INTO features(title,description,priority) VALUES('unassigned','',10000000);

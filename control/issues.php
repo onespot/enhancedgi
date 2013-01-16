@@ -104,7 +104,7 @@ class IssuesController extends PageController{
 
 		// Calculate finish times for each user
 		foreach($this->issuesByUser as $key => $val){
-			updateIssueTimes($val);
+			updateIssueTimes($val,$this->db);
 		}
 
 		// Organize the issues by milestone
