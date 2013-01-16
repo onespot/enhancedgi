@@ -214,7 +214,7 @@ class Database{
 			$row = mysql_fetch_object($result);
 			if(isset($row)){
 				// get the priority of the next one and upPriority until we reach there.
-				for($i=0;$i<($prio->priority - $row->priority + 1);$i++){
+				for($i=0;$i<($prio->priority - $row->priority -1);$i++){
 					$this->upPriority($repo,$issue_id);
 				}
 			}else{
