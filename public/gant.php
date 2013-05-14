@@ -95,7 +95,7 @@
 				JSGantt.parseXML("gant_xml.php<?php echo $getvals ?>",g);
 				<?php }else{?>
 				console.log(new Date().getTime()+" Parsing xml");
-				JSGantt.parseXML("gant_xml_by_user.php<?php echo $getvals ?>last_review=<?php echo isset($_GET['last_review'])?$_GET['last_review']:""; ?>&showmine=<?php echo isset($_GET['showmine'])?$_GET['showmine']:""; ?>&use_cached="+reset,g);
+				JSGantt.parseXML("gant_xml_by_user.php<?php echo $getvals ?>last_review=<?php echo isset($_GET['last_review'])?$_GET['last_review']:""; ?>&hidebelow=<?php echo isset($_GET['hidebelow'])?$_GET['hidebelow']:"0"; ?>&showmine=<?php echo isset($_GET['showmine'])?$_GET['showmine']:""; ?>&use_cached="+reset,g);
 				<?php } ?>
 				console.log(new Date().getTime()+" Drawing");
 				g.Draw();	

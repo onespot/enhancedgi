@@ -68,7 +68,11 @@ class IssuesController extends PageController{
 		foreach($api_issues as $issue){
 			// create Issue objects
 			$issue_object = new Issue($this->db,$issue);
-			$issue_objects[]=$issue_object;
+			if(isset($_GET['hidebelow']) && $issue_object->tag_priority<=$_GET['hidebelow']){
+				//skip
+			}else{
+				$issue_objects[]=$issue_object;
+			}
 		}
 		//usort($issue_objects,'cmp_milestone_priority');
 		usort($issue_objects,'cmp_issue_priority');
