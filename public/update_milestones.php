@@ -20,8 +20,9 @@ foreach($c->issuesByMilestone as $milestoneName => $issues){
 		}
 		$days=ceil($totalTime/86400);
 		$title=$title . " (" . $days . " day".($days>1?"s":"").")";
+		echo "Updating ".$milestone->number." ".$title."<br />";
 		$c->githubv3->api('issue')->milestones()->update('onespot', $repo, $milestone->number,  array('title' => $title,'due_on' => date(DATE_ATOM,$lastIssue->estimated_end_time)));
-		echo $title." - ".$milestone->number." : ". date(DATE_ATOM,$lastIssue->estimated_end_time)."<br />";
+		echo $title." - ".$milestone->number." : ". date(DATE_ATOM,$lastIssue->estimated_end_time)."<br /><br />";
 	}
 }
 ?>

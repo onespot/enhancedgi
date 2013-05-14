@@ -7,7 +7,7 @@ require_once '../lib/misc.php';
 require_once '../lib/github-api/lib/Github/Autoloader.php';
 require_once '../model/issue.php';
 require_once('../lib/db.php');
-require_once '../lib/github-api-v3/vendor/autoload.php';
+require_once '../lib/php-github-api/vendor/autoload.php';
 
 class PageController{
 	
