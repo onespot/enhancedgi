@@ -174,7 +174,6 @@ class HttpClient implements HttpClientInterface
 				$request->setContent(json_encode($parameters));
 			}
         }
-		echo $request;
         $hasListeners = 0 < count($this->listeners);
         if ($hasListeners) {
             foreach ($this->listeners as $listener) {
