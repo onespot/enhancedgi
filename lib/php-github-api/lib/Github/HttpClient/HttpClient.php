@@ -168,9 +168,13 @@ class HttpClient implements HttpClientInterface
         $request = $this->createRequest($httpMethod, $path);
         $request->addHeaders($headers);
         if (count($parameters) > 0) {
-            $request->setContent(json_encode($parameters, JSON_FORCE_OBJECT));
+			if($this->is_assoc($parameters)){
+				$request->setContent(json_encode($parameters, JSON_FORCE_OBJECT));
+			}else{
+				$request->setContent(json_encode($parameters));
+			}
         }
-
+		echo $request;
         $hasListeners = 0 < count($this->listeners);
         if ($hasListeners) {
             foreach ($this->listeners as $listener) {
@@ -199,6 +203,10 @@ class HttpClient implements HttpClientInterface
 
         return $response;
     }
+
+	function is_assoc($array) {
+	  return (bool)count(array_filter(array_keys($array), 'is_string'));
+	}
 
     /**
      * @return Request

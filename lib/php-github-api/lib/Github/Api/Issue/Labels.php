@@ -23,7 +23,7 @@ class Labels extends AbstractApi
         } elseif (0 === count($labels)) {
             throw new InvalidArgumentException();
         }
-
+		echo print_r($labels,true)."\n";
         return $this->post('repos/'.urlencode($username).'/'.urlencode($repository).'/issues/'.urlencode($issue).'/labels', $labels);
     }
 
